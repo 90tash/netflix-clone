@@ -107,7 +107,7 @@ Contributions are welcome! Feel free to:
 ## 📜 License
 This project is open source and available under the [MIT License](LICENSE).
 
-🙌 Author
+## 👤 Author
 
 **Ashish Patra**
 
