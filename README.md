@@ -28,7 +28,8 @@ A **Full-Stack Netflix Clone**, replicating the core functionality of Netflix. T
 
 1. **Clone the Repository**
 
-```bash
+```
+bash
 git clone https://github.com/your-username/Netflix-Clone.git
 cd Netflix-Clone
 Install Backend Dependencies
@@ -65,7 +66,7 @@ cd frontend
 npm start
 Access the App
 Open your browser at http://localhost:3000
-```
+
 📂 Project Structure
 csharp
 Copy code
@@ -83,6 +84,7 @@ Netflix-Clone/
 │   └── package.json
 │
 └── README.md
+```
 🧩 Future Enhancements
 - Add payment integration for subscription plans
 
