@@ -107,7 +107,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 🙌 Author
 
-**Ashish Patra**
+##Ashish Patra
 
 - GitHub: [@90tash](https://github.com/90tash)
 
@@ -133,7 +133,7 @@ Have questions? Feel free to reach out!
 
 
 
-**Built with ❤️ by Ashish Patra**
+##Built with ❤️ by Ashish Patra
 
 
 ```
