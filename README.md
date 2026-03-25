@@ -6,21 +6,21 @@ A **Full-Stack Netflix Clone**, replicating the core functionality of Netflix. T
 
 ## 🚀 Features
 
-\- User Authentication (JWT-based login/signup)
-\- Dynamic Movie Listings
-\- Search Functionality
-\- Responsive UI
-\- Interactive Components
-\- Full-Stack Integration
+- User Authentication (JWT-based login/signup)
+- Dynamic Movie Listings
+- Search Functionality
+- Responsive UI
+- Interactive Components
+- Full-Stack Integration
 
 ---
 
 ## 🛠 Tech Stack
 
-\- Frontend: React.js, HTML, CSS, JavaScript
-\- Backend: Node.js, Express.js
-\- Database: MongoDB
-\- Tools: Git, GitHub, VS Code, Postman
+- Frontend: React.js, HTML, CSS, JavaScript
+- Backend: Node.js, Express.js
+- Database: MongoDB
+- Tools: Git, GitHub, VS Code, Postman
 
 ---
 
@@ -84,36 +84,36 @@ Netflix-Clone/
 │
 └── README.md
 🧩 Future Enhancements
-\- Add payment integration for subscription plans
+- Add payment integration for subscription plans
 
-\- Implement user watchlists and favorites
+- Implement user watchlists and favorites
 
-\- Enhance movie recommendations using AI/ML algorithms
+- Enhance movie recommendations using AI/ML algorithms
 
-\- Deploy a fully integrated full-stack solution
+- Deploy a fully integrated full-stack solution
 
 Contributions are welcome! Feel free to:
 
-\- Report bugs
+- Report bugs
 
-\- Suggest new features
+- Suggest new features
 
-\- Submit pull requests
+- Submit pull requests
 
 
 
 📜 License
-This project is open source and available under the \[MIT License](LICENSE).
+This project is open source and available under the [MIT License](LICENSE).
 
 🙌 Author
 
-\*\*Ashish Patra\*\*
+**Ashish Patra**
 
-\- GitHub: \[@90tash](https://github.com/90tash)
+- GitHub: [@90tash](https://github.com/90tash)
 
 
 
-\## ⭐ Show Your Support
+## ⭐ Show Your Support
 
 
 
@@ -121,7 +121,7 @@ Give a ⭐️ if this project helped you!
 
 
 
-\## 📧 Contact
+## 📧 Contact
 
 
 
@@ -133,7 +133,7 @@ Have questions? Feel free to reach out!
 
 
 
-\*\*Built with ❤️ by Ashish Patra\*\*
+**Built with ❤️ by Ashish Patra**
 
 
 ```
