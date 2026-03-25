@@ -1,0 +1,84 @@
+.tittle-25{
+    font-size: 27px;
+    color: rgb(235, 235, 235);
+    font-weight: 100;
+    text-transform: capitalize;
+    text-align: center;
+    
+    z-index: 1000;
+      font-size: 27px;
+    color: rgb(235, 235, 235);
+    font-weight: 100;
+    text-transform: capitalize;
+    text-align: center;
+   margin: 50px 0;
+    z-index: 1000;
+    
+}
+.search-input{
+    width: 400px;
+    margin: 0 50px;
+    height: 15px;
+}
+.search-button{
+    height: 55px;
+    cursor: pointer;
+    width: 200px;
+}
+.search-form{
+    display: flex;
+    align-items: center;
+    
+    justify-content: center;
+}
+.search-results{
+ height: auto;
+    display: flex;
+    flex-wrap: wrap;
+
+}
+.result-card{
+    display: flex;
+    overflow: hidden;
+  
+  
+
+    margin: 20px;
+    
+    z-index: 1000;
+  
+  flex-direction: column;
+justify-content: center;
+   
+    
+    align-items: center;
+    /* Width of each movie/TV card */
+    flex-shrink: 100;
+    width: 260px;
+    height: 450px;
+    border-radius: 8px;
+    transition: transform 01s ease;
+}
+.result-title{
+  
+    color: white;
+    max-width: 200px;
+    text-align: center;
+    margin: 10px 0;
+    font-size: 20px;
+    
+   
+}
+.result-card>img{
+width: 260px;
+border-radius: 8px;
+
+}
+*{
+    font-family: sans-serif;
+}
+.no-results{
+    font-size: 30px ;
+    color: white;
+    left: 500px;
+}

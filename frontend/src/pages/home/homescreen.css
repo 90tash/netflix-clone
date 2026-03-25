@@ -1,0 +1,1098 @@
+body {
+    background-color: black;
+
+    height: 99vh;
+    width: 99vw;
+    display: flex;
+    font-family: sans-serif;
+
+    z-index: 1;
+    flex-direction: column;
+
+    position: relative;
+    align-items: center;
+
+
+
+}
+
+.hhh {
+    width: 90%;
+}
+
+.name-cast {
+    font-size: 100px;
+}
+
+.trailer {
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+    display: none;
+    /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.582);
+
+
+}
+
+.trailerbox {
+    height: 550px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    width: 1000px;
+    top: 200px;
+    background-color: black;
+    overflow: hidden;
+    border-radius: 15px;
+    border: 2px solid rgb(80, 80, 80);
+    position: absolute;
+}
+
+.trailerbox>video {
+    width: 100vw;
+    position: relative;
+}
+
+.maincontent {
+    filter: blur(50px);
+    opacity: 0.35;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    z-index: 5;
+    justify-content: center;
+    position: fixed;
+    align-items: center;
+
+
+}
+
+.maincontent>img {
+    width: 99%;
+    position: fixed;
+}
+
+.backgroundImage {
+    position: absolute;
+    z-index: 20;
+    width: 101%;
+
+}
+
+.main {
+
+    background-color: rgb(75, 75, 75);
+    height: 81%;
+    width: 96%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* background-image: url(strangerthings.jpg);  */
+    background-position-y: -100px;
+    z-index: 10;
+
+    overflow: hidden;
+    border-radius: 25px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+
+}
+
+.whiteborder {
+    height: 83%;
+    width: 7%;
+    position: absolute;
+    background-color: rgb(255, 255, 255);
+    transform: translatey(-px);
+    left: 34px;
+    border-radius: 27px;
+    z-index: 9;
+    background: linear-gradient(to bottom, rgb(255, 255, 255) 20%, rgba(0, 0, 0, 0) 100%);
+
+}
+
+.whiteborder2 {
+    height: 8%;
+    width: 95%;
+    position: absolute;
+    background-color: rgb(255, 255, 255);
+    transform: translatey(-3px);
+    left: 34PX;
+    border-radius: 27px;
+    z-index: 9;
+    background: linear-gradient(to right, rgb(255, 255, 255) 40%, rgba(0, 0, 0, 0) 100%);
+
+}
+
+.box-shadow {
+    height: 85%;
+    width: 96%;
+    position: absolute;
+    z-index: 8;
+    transform: translatey(-2px);
+    left: 38PX;
+    background-color: antiquewhite;
+    border-radius: 27px;
+    box-shadow: rgb(12, 12, 12) 0px 0px 30px 10px;
+
+
+}
+
+
+.round {
+    width: 98%;
+    height: 12%;
+
+    bottom: -7%;
+    border-radius: 300% 300% 0 0;
+    position: absolute;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgb(12, 12, 12) 0%, rgba(0, 0, 0, 0) 150%);
+
+}
+
+body>img {
+    z-index: 8;
+    position: absolute;
+}
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* .navbar>img {
+    width: 180px;
+    position: absolute;
+    margin: 20px 50px;
+    z-index: 100;
+
+} */
+
+.rightcontent {
+    margin: 0 50px;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    gap: 20px;
+    right: 0;
+    z-index: 100;
+    justify-content: center;
+
+}
+
+.rightcontent>p {
+    color: white;
+    font-size: 12px;
+}
+
+.btn1 {
+    color: white;
+    background-color: red;
+    border-style: none;
+    height: 30px;
+    width: 130px;
+    font-size: 12px;
+    border-radius: 2px;
+    font-weight: 500;
+}
+
+.btn2 {
+    color: white;
+    border: 1px solid rgb(255, 255, 255);
+    background: none;
+
+    height: 30px;
+    width: 100px;
+    font-size: 12px;
+    border-radius: 2px;
+    font-weight: 500;
+}
+
+.leftblur {
+    height: 2000px;
+    width: 100%;
+    z-index: 22;
+    background: linear-gradient(to right, rgb(0, 0, 0) 60%, rgb(0, 0, 0, 0) 100%);
+
+    rotate: -50deg;
+    position: absolute;
+    left: -500px;
+    top: -150px;
+}
+
+.bottomblur {
+    height: 100%;
+    z-index: 30;
+    width: 120%;
+    background: linear-gradient(to top, #222121e4 50%, rgba(0, 0, 0, 0) 100%);
+    bottom: -250px;
+    position: absolute;
+}
+
+.borderline {
+    height: 750px;
+    left: 35px;
+    top: 150px;
+    width: 2px;
+    z-index: 11;
+    background: linear-gradient(to bottom, #ffffffe4 50%, rgba(255, 255, 255, 0) 100%);
+    position: absolute;
+
+
+}
+
+.borderline2 {
+    width: 1720px;
+    left: 70px;
+    top: 118px;
+    height: 2px;
+    z-index: 12;
+    background: linear-gradient(to right, #ffffffe4 50%, rgba(255, 255, 255, 0) 100%);
+    position: absolute;
+
+
+}
+
+.roundborder {
+    width: 55px;
+    left: 35px;
+    top: 117px;
+    height: 55px;
+    z-index: 9;
+    background-color: white;
+    border-radius: 100px;
+    position: absolute;
+
+
+}
+
+.netflix-series-logo {
+    width: 110px;
+    margin: 15px 0;
+}
+
+.content-title>span {
+    font-weight: 600;
+  color: rgb(164, 164, 164);
+    margin: 20px 20px 0 20px;
+}
+
+.content-title {
+    position: absolute;
+    left: 100px;
+    width: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 100;
+    bottom: 20px;
+    height: 350px;
+
+}
+
+.content-title>p {
+    font-size: 16px;
+    margin: 10px;
+    color: white;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.tittle {
+    font-size: 30px;
+    color: white;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.btn-block {
+    height: 40px;
+    width: 300px;
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+}
+
+.play-btn-video {
+    height: 35px;
+    width: 100px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 3px;
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+.play-btn-video:hover {
+    background-color: rgb(182, 184, 184);
+}
+
+.more-info-btn:hover {
+    background-color: rgb(100, 100, 100);
+}
+
+.play-btn-video>img {
+    width: 25px;
+}
+
+.more-info-btn {
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+    height: 35px;
+    width: 125px;
+    background-color: rgb(78, 78, 78);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 3px;
+}
+
+
+.btn3 {
+    position: absolute;
+    left: 180px;
+    height: 50px;
+    background-color: red;
+    width: 270px;
+    z-index: 100;
+    border-radius: 40px;
+    bottom: 140px;
+    border-style: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+
+}
+
+.btn4 {
+    position: absolute;
+    right: 100px;
+    height: 45px;
+    background-color: rgba(27, 27, 27, 0.868);
+    width: 180px;
+    z-index: 400;
+    border-radius: 40px;
+    bottom: 110px;
+    border: 1px solid rgba(179, 179, 179, 0.774);
+    color: white;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 600;
+
+}
+
+
+.btn4>img {
+    width: 30px;
+    filter: invert(1);
+}
+
+.main>p {
+    position: absolute;
+    z-index: 100;
+    left: 165px;
+    color: wheat;
+    bottom: 110px;
+    font-size: 18px;
+
+}
+
+
+.playpause {
+
+
+    display: none;
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+
+
+
+
+    z-index: 5001;
+}
+
+.playpause>img {
+
+    filter: invert(1);
+    width: 35px;
+    margin: 0 20px 0 0;
+
+}
+
+.trailerbox>img {
+    position: absolute;
+    filter: invert(1);
+    width: 35px;
+
+    top: 10px;
+    right: 10px;
+
+}
+
+.trailerbox:hover>.playpause {
+    display: flex;
+    transition: 0.5s ease;
+}
+
+.trailerbox:hover>.progress-bar {
+    display: flex;
+    transition: 0.5s ease;
+}
+
+.progress-bar {
+    width: 950px;
+    height: 2px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin-top: 10px;
+    position: absolute;
+    z-index: 5000;
+    cursor: pointer;
+    bottom: 60px;
+    display: none;
+}
+
+.progress {
+    width: 0%;
+    height: 100%;
+    background-color: red;
+    border-radius: 5px;
+}
+
+.viewcontentblock {
+    height: 1000px;
+    width: 99%;
+
+
+    display: flex;
+    font-family: sans-serif;
+
+    z-index: 1;
+    flex-direction: column;
+
+
+    align-items: center;
+}
+
+.anothercontent {
+    height: 220px;
+    width: 80%;
+    background: rgba(158, 158, 158, 0.1);
+    margin: 10px 200px;
+    z-index: 2000;
+    border-radius: 15px;
+
+
+    border: 2px solid rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
+}
+
+.anothercontent2 {
+    height: 2000px;
+    width: 80%;
+    display: flex;
+
+    flex-direction: column;
+    /* background: rgba(158, 158, 158, 0.1); */
+    position: absolute;
+    z-index: 1000;
+    border-radius: 15px;
+    top: 1700px;
+    /* border: 2px solid rgba(255, 255, 255, 0.04); */
+
+
+}
+
+.anothercontent>p {
+    font-size: 14px;
+    color: white;
+    max-width: 100%;
+    font-weight: 600;
+    margin: 20px 30px;
+
+}
+
+.anothercontent>h1 {
+    font-size: 25px;
+    color: white;
+    max-width: 100%;
+    font-weight: 600;
+    margin: 20px 0 0px 30px;
+
+}
+
+.anothercontent>h2 {
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+
+    font-weight: 500;
+    margin: 0 0 0 30px;
+    max-width: 1200px;
+
+
+
+
+}
+
+.anotherseason {
+    height: 350px;
+    width: 1555px;
+    gap: 20px;
+    display: flex;
+
+    left: 150px;
+    justify-content: center;
+
+
+    transform: translateY(00px);
+
+    z-index: 2000;
+    border-radius: 15px;
+
+    overflow: hidden;
+
+    backdrop-filter: blur(16px);
+}
+
+BODY>H1 {
+    z-index: 6000;
+    color: white;
+    height: 160px;
+    width: 80%;
+    bottom: -455px;
+    position: absolute;
+}
+
+.season1 {
+    position: relative;
+    background-color: blue;
+    width: 33%;
+    margin: 0 10px 0 0;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    z-index: 5000;
+    flex-direction: column;
+    overflow: hidden;
+
+    align-items: center;
+    height: 100%;
+}
+
+.season1>video {
+    width: 550px;
+
+}
+
+.season1>p {
+
+    color: rgb(190, 190, 190);
+    font-size: 14px;
+    font-weight: 600;
+    transform: translateX(-200px);
+    margin: 5px 0;
+}
+
+.season1>p1 {
+
+    color: rgb(190, 190, 190);
+    font-size: 14px;
+    font-weight: 600;
+    transform: translateX(-150px);
+
+}
+
+.season1>.playsvg {
+    filter: invert(1);
+    width: 30px;
+
+    left: 10px;
+    bottom: 50px;
+}
+
+.season2 {
+    width: 33%;
+    margin: 0 10px 0 0;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    align-items: center;
+    background-color: ;
+    height: 100%;
+}
+
+.season2>video {
+    width: 550px;
+
+}
+
+.season2>p {
+
+    color: rgb(190, 190, 190);
+    font-size: 14px;
+    font-weight: 600;
+    transform: translateX(-200px);
+    margin: 5px 0;
+}
+
+.season2>p1 {
+
+    color: rgb(190, 190, 190);
+    font-size: 14px;
+    font-weight: 600;
+    transform: translateX(-150px);
+
+}
+
+.season2>.playsvg {
+    filter: invert(1);
+    width: 30px;
+    position: absolute;
+    right: 1000px;
+    bottom: 50px;
+}
+
+.season3 {
+    width: 33%;
+    margin: 0 10px 0 0;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    align-items: center;
+    height: 100%;
+}
+
+.season3>.thumbnail {
+    width: 550px;
+}
+
+.season1>.thumbnail {
+    width: 550px;
+}
+
+.season2>.thumbnail {
+    width: 550px;
+}
+
+.season3>p {
+
+    color: rgb(190, 190, 190);
+    font-size: 14px;
+    font-weight: 600;
+    transform: translateX(-200px);
+    margin: 5px 0;
+}
+
+.season3>p1 {
+
+    color: rgb(190, 190, 190);
+    font-size: 14px;
+    font-weight: 600;
+    transform: translateX(-150px);
+
+}
+
+.season3>.playsvg {
+    filter: invert(1);
+    width: 30px;
+    position: absolute;
+    right: 480px;
+    bottom: 50px;
+}
+
+.anothercontent2>h1 {
+    color: white;
+    margin: 10px 0;
+    text-align: center;
+
+}
+
+.anothercontent2>h2 {
+    color: white;
+    margin: 50px 0 10px 0;
+
+}
+
+.episodes {
+    display: flex;
+    height: 340px;
+    width: 100%;
+    justify-content: center;
+
+}
+
+.moredetails {
+    display: flex;
+    height: 260px;
+    width: 100%;
+    justify-content: center;
+
+}
+
+.episode1 {
+    display: flex;
+    border-radius: 15px;
+    flex-direction: column;
+    height: 100%;
+    width: 25%;
+    background: rgba(158, 158, 158, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.04);
+    margin: 0 10px;
+
+}
+
+.moredetails1 {
+    display: flex;
+    border-radius: 15px;
+    flex-direction: column;
+    height: 100%;
+
+    width: 33%;
+    background: rgba(158, 158, 158, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.04);
+    margin: 0 10px;
+
+}
+
+.episode1>img {
+    width: 335px;
+    margin: 10px 10px;
+    border-radius: 15px;
+}
+
+.episode1>h1 {
+    font-size: 18px;
+    margin: 10px 20px;
+    color: white;
+}
+
+.moredetails1>h1 {
+    font-size: 16px;
+    margin: 10px 0 0 20px;
+    color: white;
+}
+
+.episode1>p {
+    margin: 0 20px;
+    font-size: 15px;
+    max-width: 280px;
+    font-weight: 600;
+    color: rgb(190, 190, 190);
+}
+
+.moredetails1>p {
+    margin: 0 20px;
+    font-size: 15px;
+
+    font-weight: 600;
+    color: rgb(190, 190, 190);
+}
+
+.morecontents {
+    display: flex;
+    height: 450px;
+    width: 99%;
+    justify-content: center;
+    overflow: hidden;
+
+
+}
+
+.content1 {
+    display: flex;
+    overflow: hidden;
+    border-radius: 15px;
+    height: 100%;
+    width: 100px;
+    margin: 0 5px;
+    background-color: #222121e4;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.content1>img {
+    width: 200px;
+    display: flex;
+
+
+}
+
+.content1:hover {
+    transform: scale(1.05);
+    transition: ease 0.5s;
+}
+
+
+.morecontents-tv {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    /* Adds space between the items */
+    justify-content: center;
+}
+
+.content1 {
+    width: 150px;
+    /* Set a fixed width for each movie/TV show item */
+    height: auto;
+}
+
+.content1 img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+    /* Smooth hover effect */
+}
+
+.content1 img:hover {
+    transform: scale(1.1);
+    /* Slight zoom effect on hover */
+}
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+}
+
+
+.morecontents-tv {
+    display: flex;
+    gap: 20px;
+    overflow-x: hidden;
+    /* Prevent scrolling outside the container */
+}
+
+.content1 {
+    width: 150px;
+    height: auto;
+}
+
+.content1 img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.content1 img:hover {
+    transform: scale(1.1);
+}
+
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1;
+    transition: background-color 0.3s ease;
+}
+
+.scroll-btn.left {
+    left: 10px;
+}
+
+.scroll-btn.right {
+    right: 10px;
+}
+
+.scroll-btn:hover {
+    background-color: rgba(0, 0, 0, 0.629);
+}
+
+.content-container {
+    z-index: 10000;
+}
+
+
+.content-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transform: translateY(170px);
+    margin-bottom: 100px;
+}
+
+.morecontents {
+    display: flex;
+    gap: 20px;
+    overflow-x: hidden;
+    /* Hide extra items outside the visible area */
+}
+
+.content1 {
+    width: 260px;
+    height: 450px;
+    /* Width of each movie/TV card */
+    flex-shrink: 100;
+}
+
+.content1>img {
+    width: 260px;
+    height: 450px;
+    border-radius: 8px;
+    transition: transform 01s ease;
+}
+
+.content1>img:hover {
+    transform: scale(1.05);
+    border-radius: 10px;
+}
+
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1;
+    transition: background-color 0.1s ease;
+}
+
+.scroll-btn.left {
+    left: 10px;
+}
+
+.scroll-btn.right {
+    right: 10px;
+}
+
+.scroll-btn:hover {
+    background-color: rgba(0, 0, 0, 0.436);
+}
+
+.tittle-2 {
+    font-size: 27px;
+    color: rgb(235, 235, 235);
+    font-weight: 100;
+    text-transform: capitalize;
+    text-align: center;
+    margin: 0 0 30px -1450px;
+    z-index: 1000;
+    transform: translateY(170px);
+
+
+}
+.tittle-24 {
+    font-size: 27px;
+    color: rgb(235, 235, 235);
+    font-weight: 100;
+    text-transform: capitalize;
+    text-align: center;
+    margin: 0 0 30px -1150px;
+    z-index: 1000;
+    transform: translateY(170px);
+
+
+}
+.tittle-23 {
+    font-size: 27px;
+    color: rgb(235, 235, 235);
+    font-weight: 100;
+    text-transform: capitalize;
+    text-align: center;
+    margin: 0 0 30px -1450px;
+    z-index: 1000;
+    transform: translateY(150px);
+
+
+}
+
+.tittle-3 {
+    font-size: 27px;
+    color: rgb(235, 235, 235);
+    font-weight: 100;
+    text-transform: capitalize;
+    text-align: center;
+    margin: 0 0 30px -1450px;
+    z-index: 1000;
+    transform: translateY(150px);
+
+
+}
+
+.footer {
+    transform: translateY(170px);
+    z-index: 10000;
+    position: relative;
+
+}
+
+.video-container {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+   
+    width: 99%;
+    height: 400px;
+    margin: 20px 0;
+    z-index: 100000;
+    transform: translateY(150px);
+}
+
+.video-section {
+    display: flex;
+    justify-content: center;
+    width: 90%;
+  
+    height: 100%;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: nowrap;
+}
+
+.video{
+    width: 30.3%;
+    height: 78%;
+    background-color: antiquewhite;
+    border: none;
+    overflow: hidden;
+    border-radius: 10px;
+}
+.video>iframe{
+    width: 100%;
+    height: 100%;
+
+}
