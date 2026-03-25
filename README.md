@@ -65,7 +65,7 @@ cd frontend
 npm start
 Access the App
 Open your browser at http://localhost:3000
-
+```
 📂 Project Structure
 csharp
 Copy code
@@ -102,12 +102,12 @@ Contributions are welcome! Feel free to:
 
 
 
-📜 License
+## 📜 License
 This project is open source and available under the [MIT License](LICENSE).
 
 🙌 Author
 
-##Ashish Patra
+**Ashish Patra**
 
 - GitHub: [@90tash](https://github.com/90tash)
 
@@ -133,7 +133,7 @@ Have questions? Feel free to reach out!
 
 
 
-##Built with ❤️ by Ashish Patra
+**Built with ❤️ by Ashish Patra**
 
 
 ```
