@@ -1,35 +1,37 @@
 import { useEffect, useState } from "react";
 import { useContentStore } from "../stores/content";
-import axios from "axios";
+
+const TMDB_API_KEY = "e2949b4ae590912c037da493c44407fc";
 
 const useGetTrendingContent = () => {
-  const [trendingContent, setTrendingContent] = useState([]); // Initialize as empty array
-  const [isLoading, setIsLoading] = useState(false); // Track loading state
-  const [error, setError] = useState(null); // Track errors
+  const [trendingContent, setTrendingContent] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const { contentType } = useContentStore();
 
   useEffect(() => {
     const getTrendingContent = async () => {
-      setIsLoading(true); // Set loading state
-      setError(null); // Reset error state
+      setIsLoading(true);
+      setError(null);
 
       try {
-        const res = await axios.get(
-          `http://localhost:5000/api/v1/${contentType}/trending`
+        const response = await fetch(
+          `https://api.themoviedb.org/3/trending/${contentType}/day?language=en-US&api_key=${TMDB_API_KEY}`
         );
-        setTrendingContent(res.data.content); // Set trending content
+        const data = await response.json();
+        setTrendingContent(data.results || []);
       } catch (err) {
-        setError(err); // Handle errors
+        setError(err);
         console.error("Error fetching trending content:", err);
       } finally {
-        setIsLoading(false); // Reset loading state
+        setIsLoading(false);
       }
     };
 
     getTrendingContent();
   }, [contentType]);
 
-  return { trendingContent, isLoading, error }; // Return loading and error states
+  return { trendingContent, isLoading, error };
 };
 
 export default useGetTrendingContent;

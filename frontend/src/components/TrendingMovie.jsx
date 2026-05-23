@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+const TMDB_API_KEY = "e2949b4ae590912c037da493c44407fc";
+
 const TrendingMovies = () => {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
@@ -7,14 +9,14 @@ const TrendingMovies = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/v1/movie/trending", {
-          withCredentials: true, // Include cookies if needed
-        });
+        const response = await fetch(
+          `https://api.themoviedb.org/3/trending/movie/day?language=en-US&api_key=${TMDB_API_KEY}`
+        );
         const data = await response.json();
-        if (data.success) {
-          setMovies(data.content);
+        if (data.results) {
+          setMovies(data.results);
         } else {
-          setError(data.message);
+          setError(data.status_message || "Unable to load movies");
         }
       } catch (err) {
         setError("Failed to fetch movies");

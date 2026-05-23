@@ -1,139 +1,79 @@
-# Netflix Clone 🎬
+# Netflix Clone
 
-A **Full-Stack Netflix Clone**, replicating the core functionality of Netflix. This project is built using **React.js** for the frontend and **Node.js, Express.js, and MongoDB** for the backend.
+A frontend-only Netflix-style React web app built with Vite, CSS, JavaScript, and TMDB API data. The project focuses on a responsive streaming interface with dynamic movie and TV content.
 
----
+## Features
 
-## 🚀 Features
+- Responsive Netflix-style homepage, navigation bar, movie/TV cards, detail pages, and footer
+- Dynamic movie and TV show content from TMDB API
+- Search for movies, TV shows, and people
+- Posters, ratings, cast details, trailers, and overview sections
+- Login, signup, logout, and protected-route demo flow using localStorage
+- Reusable React components and Zustand state management
 
-- User Authentication (JWT-based login/signup)
-- Dynamic Movie Listings
-- Search Functionality
-- Responsive UI
-- Interactive Components
-- Full-Stack Integration
+## Tech Stack
 
----
+- React
+- JavaScript
+- CSS
+- Vite
+- TMDB API
+- Zustand
+- React Router
 
-## 🛠 Tech Stack
+## Resume Description
 
-- Frontend: React.js, HTML, CSS, JavaScript
-- Backend: Node.js, Express.js
-- Database: MongoDB
-- Tools: Git, GitHub, VS Code, Postman
+**Netflix Clone - React Web App | React, CSS, JavaScript, TMDB API**
 
----
+- Built a responsive Netflix-style web app with homepage sections, navigation bar, movie/TV cards, detail pages, and footer.
+- Used TMDB API to display dynamic movie and TV show content, including posters, ratings, trailers, cast details, and search results.
+- Created login, signup, and protected page routing UI to simulate a real streaming platform experience.
+- Organized the interface using reusable React components and responsive styling.
 
-## ⚡ Installation & Setup
+## Run Locally
 
-1. **Clone the Repository**
+Install dependencies:
 
-```
-bash
-git clone https://github.com/your-username/Netflix-Clone.git
-cd Netflix-Clone
-Install Backend Dependencies
-
-bash
-Copy code
-cd backend
-npm install
-Install Frontend Dependencies
-
-bash
-Copy code
-cd ../frontend
-npm install
-Setup Environment Variables
-Create a .env file in the backend folder:
-
-env
-Copy code
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-Run the Backend
-
-bash
-Copy code
-cd backend
-npm run dev
-Run the Frontend
-
-bash
-Copy code
+```bash
 cd frontend
-npm start
-Access the App
-Open your browser at http://localhost:3000
+npm install
+```
 
-📂 Project Structure
-csharp
-Copy code
-Netflix-Clone/
-│
-├── backend/          # Node.js + Express.js backend
-│   ├── controllers/  # API controllers
-│   ├── models/       # Database models
-│   ├── routes/       # API routes
-│   └── server.js     # Entry point
-│
-├── frontend/         # React.js frontend
-│   ├── src/
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open the Vite URL shown in the terminal, usually:
+
+```text
+http://localhost:5173
+```
+
+You can also run the frontend from the project root:
+
+```bash
+npm run dev
+```
+
+## Project Structure
+
+```text
+netflix-clone/
+├── frontend/
 │   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   └── stores/
+│   ├── index.html
 │   └── package.json
-│
-└── README.md
+├── README.md
+└── package.json
 ```
-🧩 Future Enhancements
-- Add payment integration for subscription plans
 
-- Implement user watchlists and favorites
+## Note
 
-- Enhance movie recommendations using AI/ML algorithms
-
-- Deploy a fully integrated full-stack solution
-
-Contributions are welcome! Feel free to:
-
-- Report bugs
-
-- Suggest new features
-
-- Submit pull requests
-
-
-
-## 📜 License
-This project is open source and available under the [MIT License](LICENSE).
-
-## 👤 Author
-
-**Ashish Patra**
-
-- GitHub: [@90tash](https://github.com/90tash)
-
-
-
-## ⭐ Show Your Support
-
-
-
-Give a ⭐️ if this project helped you!
-
-
-
-## 📧 Contact
-
-
-
-Have questions? Feel free to reach out!
-
-
-
-
-
-**Built with ❤️ by Ashish Patra**
-
-
-```
+This version is intentionally frontend-only. Authentication is simulated in the browser with localStorage, and content is loaded from TMDB API.

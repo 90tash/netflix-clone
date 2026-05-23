@@ -1,36 +1,69 @@
 import { create } from 'zustand';
 import toast from "react-hot-toast";
-import axios from 'axios';
 
-// Set your deployed backend URL here
-const API_BASE_URL = "https://netflix-clone-t4o6.onrender.com";
+const STORAGE_KEY = "netflix-demo-user";
+const PROFILE_PICS = ["/avatar1.png", "/avatar2.png", "/avatar3.png"];
+
+const getStoredUser = () => {
+    try {
+        const storedUser = localStorage.getItem(STORAGE_KEY);
+        return storedUser ? JSON.parse(storedUser) : null;
+    } catch {
+        localStorage.removeItem(STORAGE_KEY);
+        return null;
+    }
+};
 
 export const useAuthStore = create((set) => ({
-    user: null, // Default state
+    user: getStoredUser(),
     isSigningUp: false,
     isLoggingOut: false,
-    isCheckingAuth: true,
+    isCheckingAuth: false,
     isLoggingIn: false,
 
-    // Signup function
+    startDemo: (email = "guest@example.com") => {
+        const safeEmail = email || "guest@example.com";
+        const user = {
+            email: safeEmail,
+            username: safeEmail.split("@")[0],
+            image: "/avatar1.png",
+        };
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+        set({ user });
+    },
+
     signup: async (credentials) => {
         set({ isSigningUp: true });
         try {
-            const response = await axios.post(`${API_BASE_URL}/api/v1/auth/signup`, credentials, { withCredentials: true });
-            set({ user: response.data.user, isSigningUp: false });
-            toast.success("Account created successfully");
+            const image = PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)];
+            const user = {
+                email: credentials.email,
+                username: credentials.username || credentials.email.split("@")[0],
+                image,
+            };
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+            set({ user, isSigningUp: false });
+            toast.success("Demo account created");
         } catch (error) {
             toast.error(error.response?.data?.message || "An error occurred during signup");
             set({ isSigningUp: false, user: null });
         }
     },
 
-    // Login function
     login: async (credentials) => {
         set({ isLoggingIn: true });
         try {
-            const response = await axios.post(`${API_BASE_URL}/api/v1/auth/login`, credentials, { withCredentials: true });
-            set({ user: response.data.user, isLoggingIn: false });
+            const storedUser = getStoredUser();
+            const user = storedUser || {
+                email: credentials.email,
+                username: credentials.email.split("@")[0],
+                image: "/avatar1.png",
+            };
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+            set({ user, isLoggingIn: false });
             toast.success("Login successful");
         } catch (error) {
             toast.error(error.response?.data?.message || "Login failed");
@@ -38,15 +71,10 @@ export const useAuthStore = create((set) => ({
         }
     },
 
-    // Logout function
     logout: async () => {
         set({ isLoggingOut: true });
         try {
-            await axios.post(
-                `${API_BASE_URL}/api/v1/auth/logout`,
-                {}, // No body needed for logout
-                { withCredentials: true }
-            );
+            localStorage.removeItem(STORAGE_KEY);
             set({ user: null, isLoggingOut: false });
             toast.success("Logged out successfully");
         } catch (error) {
@@ -55,15 +83,12 @@ export const useAuthStore = create((set) => ({
         }
     },
 
-    // Auth check function
     authCheck: async () => {
         set({ isCheckingAuth: true });
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/v1/auth/authCheck`, { withCredentials: true });
-            set({ user: response.data.user, isCheckingAuth: false });
+            set({ user: getStoredUser(), isCheckingAuth: false });
         } catch (error) {
             set({ isCheckingAuth: false, user: null });
-            // toast.error(error.response?.data.message || "An error occurred");
         }
     },
 }));

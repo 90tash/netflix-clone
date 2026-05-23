@@ -52,7 +52,7 @@ const SingUpPage = () => {
               <label htmlFor='username' className='lable'>Username</label>
               <input
                 type="text"
-                placeholder='ex: nishant_dev'
+                placeholder='ex: ashish_kumar_patra'
                 id='username'
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -85,7 +85,6 @@ const SingUpPage = () => {
 };
 
 export default SingUpPage;
-
 
 
 

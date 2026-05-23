@@ -1,33 +1,54 @@
-import './footer.css'
+import "./footer.css";
+
+const footerLinks = [
+    "FAQ",
+    "Help Centre",
+    "Account",
+    "Media Centre",
+    "Investor Relations",
+    "Jobs",
+    "Ways to Watch",
+    "Terms of Use",
+    "Privacy",
+    "Cookie Preferences",
+    "Corporate Information",
+    "Contact Us",
+    "Speed Test",
+    "Legal Notices",
+    "Only on Netflix",
+];
 
 const Footer = () => {
     return (
         <footer className="footer">
             <div className="inside-footer-block">
-                <div className="credit-block">
-                    <p>© 2025 Nishant Kumar. All rights reserved.</p>
-                    <p>
-                        Designed and Developed by
-                        <a href="https://portfolio-ten-green-45.vercel.app/" target="_blank" rel="noopener noreferrer">Nishant Kumar</a>.
-                    </p>
+                <p className="footer-call">Questions? Call 000-800-919-1743</p>
 
-                </div>
-                <div className="disclaimer-block">
-
-                    <p>
-                        <a href="" target="_blank">Disclaimer</a>: This website is for educational purposes only.
-                    </p>
-                    <p>
-                        Follow me on:
-                        <a href="https://www.linkedin.com/in/nishant-singh-4543a033b/" target="_blank" rel="noopener noreferrer"><img src="https://img.icons8.com/?size=100&id=8808&format=png&color=000000" alt="" />LinkedIn</a>,
-                        <a href="https://github.com/consoledotlognishant" target="_blank" rel="noopener noreferrer"><img src="https://img.icons8.com/?size=100&id=12599&format=png&color=000000" alt="" />GitHub</a>,
-
-                    </p>
+                <div className="footer-links">
+                    {footerLinks.map((link) => (
+                        <a href="#" key={link}>
+                            {link}
+                        </a>
+                    ))}
                 </div>
 
+                <select className="footer-language" aria-label="Select language">
+                    <option value="English">English</option>
+                    <option value="Hindi">Hindi</option>
+                </select>
+
+                <p className="footer-brand">Netflix India</p>
+                <p className="footer-credit">© 2025 Ashish Kumar Patra. All rights reserved.</p>
+                <p className="footer-credit">
+                    Designed and Developed by Ashish Kumar Patra.{" "}
+                    <a href="https://github.com/90tash" target="_blank" rel="noopener noreferrer">
+                        GitHub
+                    </a>
+                </p>
+                <p className="footer-note">This website is for educational purposes only.</p>
             </div>
         </footer>
-    )
-}
+    );
+};
 
 export default Footer;
