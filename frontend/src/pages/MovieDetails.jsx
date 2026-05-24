@@ -139,7 +139,12 @@ const MovieDetails = () => {
                     <span className="media-type">M O V I E</span>
                     <h1>{title}</h1>
                     <div className="details-actions">
-                        <button className="details-play" onClick={() => document.getElementById('trailers')?.scrollIntoView({ behavior: 'smooth' })}>
+                        <button 
+                            className="details-play" 
+                            onClick={() => {
+                                if (imdbId) window.location.href = `https://www.playimdb.com/title/${imdbId}`;
+                            }}
+                        >
                             <Play fill="currentColor" /> Play
                         </button>
                         <button className="details-info" onClick={() => document.getElementById('trailers')?.scrollIntoView({ behavior: 'smooth' })}>
