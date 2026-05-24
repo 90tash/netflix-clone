@@ -12,6 +12,34 @@
     margin: 0 auto;
 }
 
+.footer-socials {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.footer-socials span {
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.footer-socials a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #737373;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.footer-socials a:hover {
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
 .footer-call {
     margin-bottom: 30px;
 }

@@ -61,12 +61,29 @@ const DiscoverMoviePage = () => {
     const [heroCandidates, setHeroCandidates] = useState([]);
     const [heroIndex, setHeroIndex] = useState(0);
     const [heroMovie, setHeroMovie] = useState(null);
+    const [heroImdbId, setHeroImdbId] = useState(null);
     const navigate = useNavigate();
+
+    const API_KEY = "e2949b4ae590912c037da493c44407fc";
+
+    useEffect(() => {
+        const fetchImdbId = async () => {
+            if (!heroMovie) return;
+            try {
+                const res = await fetch(`https://api.themoviedb.org/3/movie/${heroMovie.id}?api_key=${API_KEY}`);
+                const data = await res.json();
+                setHeroImdbId(data.imdb_id);
+            } catch (error) {
+                console.error("Error fetching hero IMDB ID:", error);
+            }
+        };
+
+        fetchImdbId();
+    }, [heroMovie]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
         const fetchAll = async () => {
-            const API_KEY = "e2949b4ae590912c037da493c44407fc";
             const endpoints = {
                 trending: `https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`,
                 popular: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`,
@@ -129,7 +146,12 @@ const DiscoverMoviePage = () => {
                     <span className="media-type">M O V I E S</span>
                     <h1>{heroMovie.title}</h1>
                     <div className="details-actions">
-                        <button className="details-play" onClick={() => handleCardClick(heroMovie)}>
+                        <button 
+                            className="details-play" 
+                            onClick={() => {
+                                if (heroImdbId) window.location.href = `https://www.playimdb.com/title/${heroImdbId}`;
+                            }}
+                        >
                             <Play fill="currentColor" /> Play
                         </button>
                         <button className="details-info" onClick={() => handleCardClick(heroMovie)}>

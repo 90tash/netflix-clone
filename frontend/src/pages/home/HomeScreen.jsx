@@ -85,7 +85,28 @@ const HomeScreen = () => {
     const [heroCandidates, setHeroCandidates] = useState([]);
     const [heroIndex, setHeroIndex] = useState(0);
     const [contentRows, setContentRows] = useState([]);
+    const [heroImdbId, setHeroImdbId] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchImdbId = async () => {
+            if (!heroContent) return;
+            try {
+                const isTv = heroContent.media_type === "tv" || heroContent.name;
+                const endpoint = isTv
+                    ? `https://api.themoviedb.org/3/tv/${heroContent.id}/external_ids?api_key=${TMDB_API_KEY}`
+                    : `https://api.themoviedb.org/3/movie/${heroContent.id}?api_key=${TMDB_API_KEY}`;
+                
+                const res = await fetch(endpoint);
+                const data = await res.json();
+                setHeroImdbId(data.imdb_id);
+            } catch (error) {
+                console.error("Error fetching hero IMDB ID:", error);
+            }
+        };
+
+        fetchImdbId();
+    }, [heroContent]);
 
     useEffect(() => {
         const loadHomeContent = async () => {
@@ -163,7 +184,13 @@ const HomeScreen = () => {
                     </div>
                     <p>{heroContent?.overview || "Movies, shows, trailers and more are ready to watch."}</p>
                     <div className="browse-actions">
-                        <button type="button" className="browse-play" onClick={() => openDetails(heroContent)}>
+                        <button 
+                            type="button" 
+                            className="browse-play" 
+                            onClick={() => {
+                                if (heroImdbId) window.location.href = `https://www.playimdb.com/title/${heroImdbId}`;
+                            }}
+                        >
                             <Play size={20} fill="currentColor" />
                             Play
                         </button>
