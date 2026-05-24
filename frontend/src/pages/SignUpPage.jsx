@@ -8,7 +8,7 @@ import { useAuthStore } from '../stores/authUser';
 //agar bychance token Appear na ho tab axiox se with credentials likh dena inthe handle signup function 
 
 
-const SingUpPage = () => {
+const SignUpPage = () => {
   const { searchParams } = new URL(document.location);
 	const emailValue = searchParams.get("email");
 
@@ -21,70 +21,64 @@ const SingUpPage = () => {
 	const handleSignUp = (e) => {
 		e.preventDefault();
 		signup({ email, username, password });
-
-
 	};
 
   return (
     <div className="body">
       <div className="home">
-        <div className="navbar">
-          <div className="left-navbar-items">
+        <header className="navbar">
           <Link to={"/"}>
-					<img src='/netflix-logo.png' alt='logo' className='logo' />
-				</Link>
-          </div>
-        </div>
+            <img src='/netflix-logo.png' alt='Netflix' className='logo' />
+          </Link>
+        </header>
 
-        <div className="singin-block">
+        <main className="singin-block">
           <div className="inside-singin-block">
             <h1>Sign Up</h1>
             <form onSubmit={handleSignUp}>
-              <label htmlFor='email' className='lable'>Email</label>
-              <input
-                type="email"
-                placeholder='ex: you@example.com'
-                id='email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <label htmlFor='username' className='lable'>Username</label>
               <input
                 type="text"
-                placeholder='ex: ashish_kumar_patra'
+                placeholder='Username'
                 id='username'
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
-              <label htmlFor='password' className='lable'>Password</label>
+              <input
+                type="email"
+                placeholder='Email'
+                id='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
               <input
                 type="password"
-                placeholder='• • • • • • •'
+                placeholder='Password'
                 id='password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <button type="submit" className='Singup-btn'>Sign Up</button>
+              <button type="submit" className='Singup-btn' disabled={isSigningUp}>
+                {isSigningUp ? "Signing Up..." : "Sign Up"}
+              </button>
             </form>
 
-     
-
             <div className='singn'>
-              Already a Member?{" "}
-              <Link className='link-tag' to="/login">Sign In</Link>
+              Already a member?{" "}
+              <Link className='link-tag' to="/login">Sign in now</Link>
             </div>
+            <p>This page is protected by Google reCAPTCHA to ensure you're not a bot. <Link to="#" className="link-tag">Learn more.</Link></p>
           </div>
-        </div>
+        </main>
       </div>
       <Footer />
     </div>
   );
 };
 
-export default SingUpPage;
+export default SignUpPage;
 
 
 

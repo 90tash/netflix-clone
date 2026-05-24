@@ -2,18 +2,19 @@
     min-height: 100vh;
     background: #141414;
     color: #fff;
-    font-family: Arial, Helvetica, sans-serif;
     overflow-x: hidden;
 }
 
+/* Hero Section (Billboard) */
 .browse-hero {
-    min-height: 720px;
+    height: 100vh;
     position: relative;
-    margin-top: -76px;
+    margin-top: -72px;
     display: flex;
-    align-items: center;
+    align-items: center; /* Changed from flex-start to center */
     overflow: hidden;
 }
+
 
 .browse-hero-image {
     position: absolute;
@@ -21,74 +22,120 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    z-index: 0;
+    animation: kenburns 20s infinite alternate, crossfade 1s ease-in-out;
+}
+
+@keyframes crossfade {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+}
+
+@keyframes kenburns {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
 }
 
 .browse-hero-shade {
     position: absolute;
     inset: 0;
-    background:
-        linear-gradient(90deg, rgba(20, 20, 20, 0.96) 0%, rgba(20, 20, 20, 0.58) 38%, rgba(20, 20, 20, 0.12) 70%),
-        linear-gradient(180deg, rgba(20, 20, 20, 0.35) 0%, rgba(20, 20, 20, 0.06) 48%, #141414 100%);
+    /* Dramatically deeper and more immersive multi-stop gradients matching details page */
+    background: 
+        /* Left-side shadow for text readability */
+        linear-gradient(to right, #141414 10%, rgba(20, 20, 20, 0.7) 30%, transparent 80%),
+        /* Top-down frame shadow */
+        linear-gradient(to bottom, #141414 0%, rgba(20, 20, 20, 0.8) 15%, transparent 50%),
+        /* Bottom-up blend shadow */
+        linear-gradient(to top, #141414 0%, rgba(20, 20, 20, 0.8) 20%, transparent 60%);
+    z-index: 1;
 }
 
 .browse-hero-content {
-    width: min(640px, calc(100% - 64px));
-    margin-left: clamp(24px, 5vw, 70px);
+    width: 40%;
+    margin-left: 4%;
     position: relative;
-    z-index: 1;
-    padding-top: 80px;
+    z-index: 2;
+    padding-top: 2vw;
+    animation: fadeIn 1.2s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .browse-label {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     color: #e5e5e5;
-    font-size: 15px;
+    font-size: 1.1vw;
     font-weight: 700;
-    letter-spacing: 0;
-    margin-bottom: 14px;
+    margin-bottom: 1vw;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
 }
 
 .browse-hero-content h1 {
-    font-size: clamp(42px, 6vw, 86px);
-    line-height: 0.96;
-    font-weight: 900;
-    margin: 0 0 18px;
+    font-size: 4vw;
+    line-height: 1.1;
+    font-weight: 800;
+    margin: 0 0 1.2vw;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.45);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .browse-meta {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
     gap: 12px;
-    margin-bottom: 18px;
-    color: #d2d2d2;
-    font-size: 16px;
-    font-weight: 700;
+    margin-bottom: 1.2vw;
+    color: #fff;
+    font-size: 1.2vw;
+    font-weight: 600;
+}
+
+.browse-meta span:not(:last-child)::after {
+    content: "|";
+    margin-left: 12px;
+    opacity: 0.5;
 }
 
 .browse-hero-content p {
-    max-width: 560px;
-    color: #f2f2f2;
-    font-size: 18px;
-    line-height: 1.45;
-    margin: 0 0 24px;
+    color: #fff;
+    font-size: 1.2vw;
+    line-height: 1.4;
+    margin: 0 0 1.5vw;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.45);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-width: 90%;
 }
 
+/* Action Buttons */
 .browse-actions {
     display: flex;
     gap: 12px;
 }
 
 .browse-actions button {
-    height: 46px;
+    height: 3.2vw;
+    min-height: 36px;
     border: 0;
     border-radius: 4px;
-    padding: 0 24px;
+    padding: 0 1.8vw;
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    font-size: 17px;
+    font-size: 1.2vw;
     font-weight: 700;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .browse-play {
@@ -97,111 +144,176 @@
 }
 
 .browse-play:hover {
-    background: rgba(255, 255, 255, 0.78);
+    background: rgba(255, 255, 255, 0.75);
 }
 
 .browse-info {
-    background: rgba(109, 109, 110, 0.72);
+    background: rgba(109, 109, 110, 0.7);
     color: #fff;
 }
 
 .browse-info:hover {
-    background: rgba(109, 109, 110, 0.48);
+    background: rgba(109, 109, 110, 0.4);
 }
 
+/* Content Rows */
 .browse-main {
     position: relative;
     z-index: 2;
-    margin-top: -118px;
-    padding: 0 0 54px;
+    margin-top: -8vh;
+    padding-bottom: 50px;
 }
 
 .browse-row {
-    margin-bottom: 34px;
-    padding-left: clamp(18px, 4vw, 60px);
+    margin-bottom: 3vw;
+    padding-left: 4%;
+    position: relative;
+}
+
+.slider-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .browse-row h2 {
-    font-size: 22px;
+    font-size: 1.4vw;
     font-weight: 700;
-    margin: 0 0 12px;
+    margin: 0 0 0.5vw;
+    color: #e5e5e5;
+    transition: color 0.2s ease;
+    position: relative;
+    z-index: 5;
+}
+
+.browse-row:hover h2 {
+    color: #fff;
 }
 
 .browse-slider {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 190px;
-    gap: 8px;
+    display: flex;
+    gap: 0.8vw;
     overflow-x: auto;
-    overflow-y: visible;
-    padding: 4px clamp(18px, 4vw, 60px) 22px 0;
-    scrollbar-width: thin;
+    overflow-y: hidden;
+    padding: 2vw 4% 2vw 0;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+}
+
+.browse-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.row-arrow {
+    position: absolute;
+    top: 1vw;
+    bottom: 1vw;
+    width: 4%;
+    background: rgba(20, 20, 20, 0.5);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s, background 0.3s;
+}
+
+.slider-wrapper:hover .row-arrow {
+    opacity: 1;
+}
+
+.row-arrow:hover {
+    background: rgba(20, 20, 20, 0.8);
+}
+
+.row-arrow.left {
+    left: -4%;
+}
+
+.row-arrow.right {
+    right: 0;
 }
 
 .browse-card {
+    flex: 0 0 18vw; /* Significantly increased from 14vw for PC/Web view */
+    aspect-ratio: 16 / 9;
     border: 0;
     padding: 0;
     background: transparent;
-    color: #fff;
-    text-align: left;
     cursor: pointer;
-    transition: transform 0.18s ease;
+    transition: transform 0.4s cubic-bezier(0.5, 0, 0.1, 1), z-index 0.4s step-start;
+    position: relative;
+    z-index: 1;
 }
 
+
 .browse-card:hover {
-    transform: scale(1.06);
+    transform: scale(1.05); /* Precisely matching the 'Similar Movies' effect */
+    z-index: 100;
 }
 
 .browse-card img {
-    width: 190px;
-    aspect-ratio: 2 / 3;
+    width: 100%;
+    height: 100%;
     display: block;
     object-fit: cover;
     border-radius: 4px;
     background: #222;
 }
 
-.browse-card span {
-    display: block;
-    min-height: 36px;
-    margin-top: 8px;
-    color: #e5e5e5;
-    font-size: 14px;
-    line-height: 1.25;
+.card-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px 10px 8px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    color: #fff;
+    font-size: 0.9vw;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    text-align: center;
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.browse-card:hover .card-title {
+    opacity: 1;
+}
+
+@media (max-width: 1100px) {
+    .browse-hero-content {
+        width: 60%;
+    }
+    .browse-hero-content h1 { font-size: 6vw; }
+    .browse-hero-content p, .browse-meta, .browse-actions button, .browse-label { font-size: 1.8vw; }
+    .browse-actions button { height: 4.5vw; }
+    .browse-row h2 { font-size: 2.2vw; }
+    .browse-card { flex: 0 0 22vw; }
 }
 
 @media (max-width: 760px) {
     .browse-hero {
-        min-height: 620px;
+        height: 60vh;
     }
-
     .browse-hero-content {
-        width: calc(100% - 32px);
-        margin-left: 16px;
+        width: 90%;
+        padding-top: 100px;
     }
-
-    .browse-hero-content p {
-        font-size: 16px;
-    }
-
-    .browse-actions {
-        flex-wrap: wrap;
-    }
-
-    .browse-main {
-        margin-top: -74px;
-    }
-
-    .browse-row {
-        padding-left: 16px;
-    }
-
-    .browse-slider {
-        grid-auto-columns: 132px;
-        padding-right: 16px;
-    }
-
-    .browse-card img {
-        width: 132px;
-    }
+    .browse-hero-content h1 { font-size: 8vw; }
+    .browse-hero-content p, .browse-meta, .browse-actions button, .browse-label { font-size: 2.5vw; }
+    .browse-actions button { height: 6vw; padding: 0 4vw; }
+    .browse-row h2 { font-size: 4vw; }
+    .browse-card { flex: 0 0 32vw; }
+    .browse-main { margin-top: -10vh; }
+}
+}
 }

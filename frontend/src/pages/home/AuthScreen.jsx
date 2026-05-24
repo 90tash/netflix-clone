@@ -122,48 +122,108 @@ const AuthScreen = () => {
 
             <main className="landing-content">
                 <section className="landing-section">
-                    <h2>Trending Now</h2>
-                    <div className="trending-row">
-                        {trendingMovies.map((movie, index) => (
-                            <article className="trending-card" key={`${movie.id}-${movie.media_type || "movie"}`}>
-                                <span>{index + 1}</span>
-                                <img
-                                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                    alt={movie.title || movie.name || "Trending title"}
-                                />
-                            </article>
-                        ))}
+                    <div className="section-container">
+                        <h2>Trending Now</h2>
+                        <div className="trending-row">
+                            {trendingMovies.map((movie, index) => (
+                                <article className="trending-card" key={`${movie.id}-${movie.media_type || "movie"}`}>
+                                    <span>{index + 1}</span>
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                                        alt={movie.title || movie.name || "Trending title"}
+                                    />
+                                </article>
+                            ))}
+                        </div>
                     </div>
                 </section>
 
-                <section className="landing-section">
-                    <h2>More reasons to join</h2>
-                    <div className="benefit-grid">
-                        {benefits.map((benefit) => (
-                            <article className="benefit-card" key={benefit.title}>
-                                <h3>{benefit.title}</h3>
-                                <p>{benefit.text}</p>
-                            </article>
-                        ))}
+                {/* Section 1: Enjoy on your TV */}
+                <section className="story-section">
+                    <div className="story-container">
+                        <div className="story-text">
+                            <h1>Enjoy on your TV</h1>
+                            <h2>Watch on smart TVs, PlayStation, Xbox, Chromecast, Apple TV, Blu-ray players and more.</h2>
+                        </div>
+                        <div className="story-media">
+                            <img src="/tv.png" alt="TV" className="tv-frame" />
+                            <video className="tv-video" autoPlay playsInline muted loop>
+                                <source src="/hero-vid.m4v" type="video/mp4" />
+                            </video>
+                        </div>
                     </div>
                 </section>
 
-                <section className="landing-section faq-section">
-                    <h2>Frequently Asked Questions</h2>
-                    <div className="faq-list">
-                        {faqs.map((faq, index) => (
-                            <div className="faq-item" key={faq.question}>
-                                <button
-                                    type="button"
-                                    className="faq-question"
-                                    onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                                >
-                                    <span>{faq.question}</span>
-                                    <span className="faq-plus">{openFaq === index ? "-" : "+"}</span>
-                                </button>
-                                {openFaq === index && <p className="faq-answer">{faq.answer}</p>}
+                {/* Section 2: Download */}
+                <section className="story-section">
+                    <div className="story-container reverse">
+                        <div className="story-text">
+                            <h1>Download your shows to watch offline</h1>
+                            <h2>Save your favourites easily and always have something ready to watch.</h2>
+                        </div>
+                        <div className="story-media">
+                            <img src="/strangerthings.jpg" alt="Stranger Things" className="download-img" />
+                            <div className="download-overlay">
+                                <img src="/stranger-things-sm.png" alt="small" className="dl-poster" />
+                                <div className="dl-text">
+                                    <div className="dl-title">Stranger Things</div>
+                                    <div className="dl-status">Downloading...</div>
+                                </div>
+                                <img src="/download-icon.gif" alt="gif" className="dl-icon" />
                             </div>
-                        ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Section 3: Watch everywhere */}
+                <section className="story-section">
+                    <div className="story-container">
+                        <div className="story-text">
+                            <h1>Watch everywhere</h1>
+                            <h2>Stream movies and TV shows on your phone, tablet, laptop and TV.</h2>
+                        </div>
+                        <div className="story-media">
+                            <img src="/device-pile.png" alt="Devices" className="device-frame" />
+                            <video className="device-video" autoPlay playsInline muted loop>
+                                <source src="/video-devices.m4v" type="video/mp4" />
+                            </video>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Section 4: Kids */}
+                <section className="story-section">
+                    <div className="story-container reverse">
+                        <div className="story-text">
+                            <h1>Create profiles for kids</h1>
+                            <h2>Let kids explore family-friendly entertainment in their own profile.</h2>
+                        </div>
+                        <div className="story-media">
+                            <img src="/kids.png" alt="Kids" className="kids-img" />
+                        </div>
+                    </div>
+                </section>
+
+                <section className="faq-section">
+                    <div className="section-container">
+                        <h2>Frequently Asked Questions</h2>
+                        <div className="faq-list">
+                            {faqs.map((faq, index) => (
+                                <div className="faq-item" key={faq.question}>
+                                    <button
+                                        type="button"
+                                        className="faq-question"
+                                        onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                                    >
+                                        <span>{faq.question}</span>
+                                        <span className="faq-plus">{openFaq === index ? "×" : "+"}</span>
+                                    </button>
+                                    <div className={`faq-answer-wrapper ${openFaq === index ? 'open' : ''}`}>
+                                        <p className="faq-answer">{faq.answer}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </section>
 

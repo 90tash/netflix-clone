@@ -2,43 +2,34 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
-
 import "./peopleDetails.css";
 
 const PeopleDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const person = location.state?.movie || location.state?.person;
-  // Passed from SearchPage
+  const person = location.state?.person;
 
   const [details, setDetails] = useState(null);
   const [credits, setCredits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  
-
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (!person) return;
 
     const fetchDetails = async () => {
       try {
         setIsLoading(true);
+        const [detailsRes, creditsRes] = await Promise.all([
+          fetch(`https://api.themoviedb.org/3/person/${person.id}?api_key=e2949b4ae590912c037da493c44407fc`),
+          fetch(`https://api.themoviedb.org/3/person/${person.id}/combined_credits?api_key=e2949b4ae590912c037da493c44407fc`)
+        ]);
 
-        // Fetch person details
-        const detailsResponse = await fetch(
-          `https://api.themoviedb.org/3/person/${person.id}?api_key=e2949b4ae590912c037da493c44407fc`
-        );
-        const detailsData = await detailsResponse.json();
-
-        // Fetch person credits (movies and TV shows)
-        const creditsResponse = await fetch(
-          `https://api.themoviedb.org/3/person/${person.id}/combined_credits?api_key=e2949b4ae590912c037da493c44407fc`
-        );
-        const creditsData = await creditsResponse.json();
+        const detailsData = await detailsRes.json();
+        const creditsData = await creditsRes.json();
 
         setDetails(detailsData);
-        setCredits(creditsData.cast); // Movies and TV shows
+        setCredits(creditsData.cast.sort((a, b) => (b.vote_count || 0) - (a.vote_count || 0)).slice(0, 20));
       } catch (error) {
         console.error("Error fetching person details:", error);
       } finally {
@@ -48,102 +39,77 @@ const PeopleDetails = () => {
 
     fetchDetails();
   }, [person]);
- 
 
   const handleCreditClick = (movie) => {
-    if (movie.media_type === "movie") {
-      navigate("/moviedetails", { state: { movie, type: "movie" } });
-    } else if (movie.media_type === "tv") {
-      navigate("/tvdetails", { state: { movie, type: "tv"} });
-    }
-    window.location.reload();
+    const targetPath = movie.media_type === "movie" ? "/moviedetails" : "/tvdetails";
+    navigate(targetPath, { state: { movie } });
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <div className="people-details-page"><Navbar /><p style={{textAlign:'center', padding:'100px'}}>Loading...</p></div>;
+  if (!details) return null;
 
   return (
-    <>
-      <Navbar className='header' />
-
-      <div className="viewcontentblock">
-        <div className="maincontent">
-          {details.profile_path && (
-            <img
-              src={`https://image.tmdb.org/t/p/original${details.profile_path}`}
-              alt={details.name}
-              className="person-image"
-            />
-          )}
-        </div>
-
-        <div className="whiteborder1"></div>
-        <div className="whiteborder21"></div>
-
-        <div className="main1">
-          {details.profile_path && (
-            <img
-              src={`https://image.tmdb.org/t/p/original${details.profile_path}`}
-              alt={details.name}
-              className="person-image"
-            />
-          )}
-          <div className="leftblur1"></div>
-          <div className="bottomblur"></div>
-
-          <div className="round"></div>
-          <div className="content-title1">
-            <h1 className="tittle">{details.name}</h1>
+    <div className="people-details-page">
+      <Navbar />
+      
+      <main className="people-container">
+        <aside className="people-sidebar">
+          <img
+            src={details.profile_path ? `https://image.tmdb.org/t/p/h632${details.profile_path}` : "/avatar1.png"}
+            alt={details.name}
+          />
+          <h2>Personal Info</h2>
+          <div className="info-item">
+            <label>Known For</label>
+            <p>{details.known_for_department}</p>
           </div>
-        </div>
-
-        <div className="detailsofpeople">
-          <h1 className="tittle">{details.name}</h1>
-          <h3 className="gender">
-            <b>Gender:</b> {details.gender === 2 ? "Male" : "Female"}
-          </h3>
-          <h2 className="gender">
-            <b>Date of Birth:</b> {details.birthday}
-          </h2>
-          {details.deathday && (
-            <h4 className="gender">
-              <b>Death Day:</b> {details.deathday}
-            </h4>
+          <div className="info-item">
+            <label>Gender</label>
+            <p>{details.gender === 1 ? "Female" : details.gender === 2 ? "Male" : "Not specified"}</p>
+          </div>
+          {details.birthday && (
+            <div className="info-item">
+              <label>Birthday</label>
+              <p>{details.birthday} ({new Date().getFullYear() - new Date(details.birthday).getFullYear()} years old)</p>
+            </div>
           )}
-          <h3 className="gender">
-            <b>Place of Birth:</b> {details.place_of_birth}
-          </h3>
-          <h3 className="gender">
-            <b>Profession:</b> {details.known_for_department}
-          </h3>
-          <h3 className="gender1">Biography</h3>
-          <p className="overview">{details.biography || "Biography not available."}</p>
-        </div>
-      </div>
+          <div className="info-item">
+            <label>Place of Birth</label>
+            <p>{details.place_of_birth || "N/A"}</p>
+          </div>
+        </aside>
 
-      <div className="people-details">
-        <h2 className="tittle">Movies & TV Shows</h2>
-        <div className="credits-list">
-          {credits
-            .filter((credit) => credit.poster_path) // Only show credits with a poster
-            .map((credit) => (
-              <div
-                key={credit.id}
-                className="credit-card"
-                onClick={() => handleCreditClick(credit)}
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${credit.poster_path}`}
-                  alt={credit.title || credit.name}
-                  className="credit-image"
-                />
-                <p className="credit-title">{credit.title || credit.name}</p>
-              </div>
-            ))}
-        </div>
-      </div>
+        <section className="people-main">
+          <h1>{details.name}</h1>
+          
+          <div className="biography">
+            <h2>Biography</h2>
+            <p>{details.biography || `We don't have a biography for ${details.name}.`}</p>
+          </div>
+
+          <div className="known-for">
+            <h2>Known For</h2>
+            <div className="credits-grid">
+              {credits.map((credit) => (
+                <div
+                  key={credit.id + credit.media_type}
+                  className="credit-item"
+                  onClick={() => handleCreditClick(credit)}
+                >
+                  <img
+                    src={credit.poster_path ? `https://image.tmdb.org/t/p/w342${credit.poster_path}` : "/404.png"}
+                    alt={credit.title || credit.name}
+                  />
+                  <p>{credit.title || credit.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
 
       <Footer />
-    </>
+    </div>
   );
 };
 

@@ -1,380 +1,160 @@
-import { Play, Info } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { Info, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import Navbar from "../../../components/Navbar";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import Footer from '../../../components/Footer';
+import Footer from "../../../components/Footer";
 import { useNavigate } from "react-router-dom";
+import "../../movieTvDetails.css";
+import "../../home/homescreen.css";
 
-const HomeScreen = () => {
-    const [movieList, setMovieList] = useState([]);
-    const [popularMovies, setPopularMovies] = useState([]);
-    const [topRatedMovies, setTopRatedMovies] = useState([]);
-    const [randomMovie, setRandomMovie] = useState(null);
-    const [cast, setCast] = useState([]); // To store the cast of the random movie
-    const [teaser, setTeaser] = useState(null);
-    const [trailers, setTrailers] = useState([]);
+const TvRow = ({ title, items, onCardClick }) => {
+    const sliderRef = useRef(null);
+    const [showLeftArrow, setShowLeftArrow] = useState(false);
 
-    const navigate = useNavigate();
-
-    const handleMovieClick = (movie) => {
-        navigate("/tvdetails", { state: { movie } });
-        window.location.reload();
-    };
-
-    const handleMemberClick = (person) => {
-        navigate("/peopledetails", { state: { person} });
-    };
-
-    const [trendingIndex, setTrendingIndex] = useState(0); // Index for trending section
-    const [popularIndex, setPopularIndex] = useState(0); // Index for popular section
-    const [topRatedIndex, setTopRatedIndex] = useState(0); // Index for top rated section
-    const [castIndex, setCastIndex] = useState(0); // Index for cast section
-
-    // Trending Content to Show
-    const trendingContentToShow = movieList.slice(0, 10);
-
-    // Handlers for Trending Content
-    const handleTrendingLeftClick = () => {
-        setTrendingIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    };
-
-    const handleTrendingRightClick = () => {
-        setTrendingIndex((prevIndex) =>
-            Math.min(prevIndex + 1, trendingContentToShow.length - 6)
-        );
-    };
-
-    // Handlers for Popular Movies
-    const handlePopularLeftClick = () => {
-        setPopularIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    };
-
-    const handleTopRatedLeftClick = () => {
-        setTopRatedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    };
-
-    const handlePopularRightClick = () => {
-        setPopularIndex((prevIndex) =>
-            Math.min(prevIndex + 1, popularMovies.length - 6)
-        );
-    };
-
-    const handleTopRatedRightClick = () => {
-        setTopRatedIndex((prevIndex) =>
-            Math.min(prevIndex + 1, topRatedMovies.length - 6)
-        );
-    };
-
-    const handleCastLeftClick = () => {
-        setCastIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    };
-
-    const handleCastRightClick = () => {
-        setCastIndex((prevIndex) =>
-            Math.min(prevIndex + 1, cast.length - 6)
-        );
-    };
-
-    useEffect(() => {
-        fetchTrendingContent();
-        fetchPopularMovies();
-        fetchTopRatedMovies();
-    }, []);
-
-    useEffect(() => {
-        if (randomMovie) {
-            fetchCast(randomMovie.id);
-        }
-    }, [randomMovie]);
-
-    useEffect(() => {
-        const fetchVideos = async () => {
-            if (!randomMovie || !randomMovie.id) return;
-
-            try {
-                const detailsResponse = await fetch(
-                    `https://api.themoviedb.org/3/tv/${randomMovie.id}?api_key=e2949b4ae590912c037da493c44407fc`
-                );
-                const detailsData = await detailsResponse.json();
-
-                const allTrailers = [];
-                let foundTeaser = null;
-
-                // Iterate through seasons and fetch videos
-                for (const season of detailsData.seasons) {
-                    const seasonResponse = await fetch(
-                        `https://api.themoviedb.org/3/tv/${randomMovie.id}/season/${season.season_number}/videos?api_key=e2949b4ae590912c037da493c44407fc`
-                    );
-                    const seasonData = await seasonResponse.json();
-
-                    if (!foundTeaser) {
-                        foundTeaser = seasonData.results.find((video) => video.type === "Teaser");
-                    }
-
-                    const seasonTrailers = seasonData.results.filter((video) => video.type === "Trailer");
-                    allTrailers.push(...seasonTrailers);
-
-                    // Stop if we already have enough trailers
-                    if (allTrailers.length >= 2) break;
-                }
-
-                setTeaser(foundTeaser);
-                setTrailers(allTrailers.slice(0, 2)); // Limit to 2 trailers
-            } catch (error) {
-                console.error("Error fetching videos:", error);
-            }
-        };
-
-        fetchVideos();
-    }, [randomMovie]);
-
-    // Fetch Trending Content (Movies or TV Shows)
-    const fetchTrendingContent = () => {
-        fetch(
-            `https://api.themoviedb.org/3/trending/tv/day?language=en-US&api_key=e2949b4ae590912c037da493c44407fc`
-        )
-            .then((res) => res.json())
-            .then((json) => {
-                setMovieList(json.results);
-                const randomIndex = Math.floor(Math.random() * json.results.length);
-                setRandomMovie(json.results[randomIndex]);
-            })
-            .catch((error) => console.error("Error fetching trending content:", error));
-    };
-
-    // Fetch Cast Information for Random Movie or TV Show
-    const fetchCast = (movieId) => {
-        fetch(
-            `https://api.themoviedb.org/3/tv/${movieId}/credits?api_key=e2949b4ae590912c037da493c44407fc`
-        )
-            .then((res) => res.json())
-            .then((json) => {
-                setCast(json.cast.slice(0, 6)); // Limit to 6 cast members
-            })
-            .catch((error) => console.error("Error fetching cast:", error));
-    };
-
-    // Fetch Popular Movies or TV Shows
-    const fetchPopularMovies = async () => {
-        try {
-            const response = await fetch(
-                `https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1&api_key=e2949b4ae590912c037da493c44407fc`
-            );
-            const data = await response.json();
-            setPopularMovies(data.results.slice(0, 10));
-        } catch (error) {
-            console.error("Error fetching popular content:", error);
+    const scroll = (direction) => {
+        if (sliderRef.current) {
+            const { scrollLeft, clientWidth } = sliderRef.current;
+            const scrollTo = direction === 'left' ? scrollLeft - clientWidth : scrollLeft + clientWidth;
+            sliderRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
         }
     };
 
-    // Fetch Top Rated Movies or TV Shows
-    const fetchTopRatedMovies = async () => {
-        try {
-            const response = await fetch(
-                `https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1&api_key=e2949b4ae590912c037da493c44407fc`
-            );
-            const data = await response.json();
-            setTopRatedMovies(data.results.slice(0, 10));
-        } catch (error) {
-            console.error("Error fetching popular content:", error);
+    const handleScroll = () => {
+        if (sliderRef.current) {
+            setShowLeftArrow(sliderRef.current.scrollLeft > 0);
         }
     };
 
     return (
-        <div>
+        <section className="browse-row">
+            <h2>{title}</h2>
+            <div className="slider-wrapper">
+                {showLeftArrow && (
+                    <button className="row-arrow left" onClick={() => scroll('left')}>
+                        <ChevronLeft size={40} />
+                    </button>
+                )}
+                
+                <div className="browse-slider" ref={sliderRef} onScroll={handleScroll}>
+                    {items.map((t) => (
+                        <button key={t.id} className="browse-card" onClick={() => onCardClick(t)}>
+                            <img src={`https://image.tmdb.org/t/p/w500${t.backdrop_path || t.poster_path}`} alt={t.name} />
+                            <span className="card-title">{t.name}</span>
+                        </button>
+                    ))}
+                </div>
+
+                <button className="row-arrow right" onClick={() => scroll('right')}>
+                    <ChevronRight size={40} />
+                </button>
+            </div>
+        </section>
+    );
+};
+
+const DiscoverTvPage = () => {
+    const [tvs, setTvs] = useState({
+        trending: [],
+        popular: [],
+        topRated: [],
+        airingToday: [],
+    });
+    const [heroCandidates, setHeroCandidates] = useState([]);
+    const [heroIndex, setHeroIndex] = useState(0);
+    const [heroTv, setHeroTv] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        const fetchAll = async () => {
+            const API_KEY = "e2949b4ae590912c037da493c44407fc";
+            const endpoints = {
+                trending: `https://api.themoviedb.org/3/trending/tv/day?api_key=${API_KEY}`,
+                popular: `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}`,
+                topRated: `https://api.themoviedb.org/3/tv/top_rated?api_key=${API_KEY}`,
+                airingToday: `https://api.themoviedb.org/3/tv/airing_today?api_key=${API_KEY}`,
+            };
+
+            try {
+                const results = {};
+                for (const [key, url] of Object.entries(endpoints)) {
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    results[key] = data.results || [];
+                }
+                setTvs(results);
+                const candidates = results.trending.filter(t => t.backdrop_path);
+                setHeroCandidates(candidates);
+                setHeroTv(candidates[0]);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchAll();
+    }, []);
+
+    // Auto-rotate hero content every 8 seconds
+    useEffect(() => {
+        if (heroCandidates.length === 0) return;
+        const interval = setInterval(() => {
+            setHeroIndex((prev) => (prev + 1) % Math.min(heroCandidates.length, 10));
+        }, 8000);
+        return () => clearInterval(interval);
+    }, [heroCandidates]);
+
+    useEffect(() => {
+        if (heroCandidates.length > 0) {
+            setHeroTv(heroCandidates[heroIndex]);
+        }
+    }, [heroIndex, heroCandidates]);
+
+    if (!heroTv) return null;
+
+    const handleCardClick = (t) => {
+        navigate("/tvdetails", { state: { movie: t } });
+    };
+
+    return (
+        <div className="details-page">
             <Navbar />
-            <div className="viewcontentblock">
-                <div className="maincontent">
-                    <img
-                        className="maincontentbackgroud"
-                        src={
-                            randomMovie
-                                ? `https://image.tmdb.org/t/p/original${randomMovie.backdrop_path}`
-                                : ""
-                        }
-                        alt="Background"
-                    />
-                </div>
-
-                <div className="whiteborder"></div>
-                <div className="whiteborder2"></div>
-
-                <div className="main">
-                    <img
-                        className="backgroundImage"
-                        src={
-                            randomMovie
-                                ? `https://image.tmdb.org/t/p/original${randomMovie.backdrop_path}`
-                                : ""
-                        }
-                        alt={randomMovie ? randomMovie.title || randomMovie.name : "Movie"}
-                    />
-                    <div className="leftblur"></div>
-                    <div className="bottomblur"></div>
-
-                    <div className="round"></div>
-                    <div className="content-title">
-                    <span  className='media-type'>M O V I E</span>
-                       
-                        <h1 className="tittle">
-                            {randomMovie ? randomMovie.title || randomMovie.name : "Loading..."}
-                        </h1>
-                        <div className="btn-block">
-                            <Link className="play-btn-video" to={"/watch/123"}>
-                                <Play />
-                                Play
-                            </Link>
-                            <Link className="more-info-btn" to={"/watch/123"}>
-                                <Info className="info-icon" />
-                                More Info
-                            </Link>
-                        </div>
+            <section className="details-hero">
+                <img 
+                    key={heroTv.id}
+                    className="details-hero-image" 
+                    src={`https://image.tmdb.org/t/p/original${heroTv.backdrop_path}`} 
+                    alt={heroTv.name} 
+                    style={{ animation: 'kenburns 20s infinite alternate, crossfade 1s ease-in-out' }}
+                />
+                <div className="details-hero-shade" />
+                <div className="details-hero-content">
+                    <span className="media-type">T V  S H O W S</span>
+                    <h1>{heroTv.name}</h1>
+                    <div className="details-actions">
+                        <button className="details-play" onClick={() => handleCardClick(heroTv)}>
+                            <Play fill="currentColor" /> Play
+                        </button>
+                        <button className="details-info" onClick={() => handleCardClick(heroTv)}>
+                            <Info /> More Info
+                        </button>
                     </div>
+                    <div className="details-hero-meta">
+                        <span className="rating">{heroTv.vote_average.toFixed(1)} Rating</span>
+                        <span>{heroTv.first_air_date?.split("-")[0]}</span>
+                        <span className="maturity">{heroTv.adult ? "18+" : "12+"}</span>
+                        <span className="hd-badge">HD</span>
+                    </div>
+                    <p className="details-hero-overview truncate-2">{heroTv.overview}</p>
                 </div>
-            </div>
+            </section>
 
-            <div className="anothercontent">
-                <h1>{randomMovie ? randomMovie.title || randomMovie.name : "Loading..."}</h1>
-                <p>{randomMovie ? randomMovie.first_air_date : "Loading..."}{" "}
-                    |{" "}
-                    {randomMovie && randomMovie.adult
-                        ? "Adult (18+)"
-                        : "Kids, Adult (12+)"}{"     "}|  Rating:{randomMovie ? randomMovie.vote_average : "Loading"}</p>
-                <h2>{randomMovie ? randomMovie.overview : "Loading"}</h2>
-            </div>
-
-            <h2 className="tittle-23">Teaser and Trailers</h2>
-            <div className="video-container">
-
-                <div className="video-section">
-                    {teaser && (
-                        <div className="video">
-                            <iframe
-                                src={`https://www.youtube.com/embed/${teaser.key}?modestbranding=1&showinfo=0&rel=0&controls=0&autoplay=0`}
-                                title="Teaser"
-                                allow=" encrypted-media"
-                                allowFullScreen
-                            />
-                        </div>
-
-                    )}
-                    {trailers.map((trailer, index) => (
-                        <div className="video" key={index}>
-                            <iframe
-                                src={`https://www.youtube.com/embed/${trailer.key}?modestbranding=1&showinfo=0&rel=0&controls=0&autoplay=0`}
-                                title={`Trailer ${index + 1}`}
-                                allow=" encrypted-media"
-                                allowFullScreen
-                            />
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-
-
-            <h2 className="tittle-2">Cast</h2>
-            <div className="content-container">
-                {castIndex > 0 && (
-                    <button className="scroll-btn left" onClick={handleCastLeftClick}>
-                        &lt;
-                    </button>
-                )}
-                <div className="morecontents">
-                    {cast.slice(castIndex, castIndex + 6).map((person) => (
-                        <div key={person.id} className="content1" onClick={() => handleMemberClick(person)}  >
-                            <img
-                                src={`https://image.tmdb.org/t/p/w500${person.profile_path}`}
-                                alt={person.name}
-                            />
-                            <p>{person.name}</p>
-                        </div>
-                    ))}
-                </div>
-                {castIndex < cast.length - 6 && (
-                    <button className="scroll-btn right" onClick={handleCastRightClick}>
-                        &gt;
-                    </button>
-                )}
-            </div>
-
-            {/* Trending Section */}
-            <h2 className="tittle-2">Trending TV Shows</h2>
-            <div className="content-container">
-                {trendingIndex > 0 && (
-                    <button className="scroll-btn left" onClick={handleTrendingLeftClick}>
-                        &lt;
-                    </button>
-                )}
-                <div className="morecontents">
-                    {trendingContentToShow.slice(trendingIndex, trendingIndex + 6).map((movie) => (
-                        <div key={movie.id} className="content1" onClick={() => handleMovieClick(movie)}    >
-                            <img
-                                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                alt={movie.title || movie.name}
-                            />
-                            <p>{movie.title || movie.name}</p>
-                        </div>
-                    ))}
-                </div>
-                {trendingIndex < trendingContentToShow.length - 6 && (
-                    <button className="scroll-btn right" onClick={handleTrendingRightClick}>
-                        &gt;
-                    </button>
-                )}
-            </div>
-
-            {/* Popular Section */}
-            <h2 className="tittle-2">Upcoming Movies </h2>
-            <div className="content-container">
-                {popularIndex > 0 && (
-                    <button className="scroll-btn left" onClick={handlePopularLeftClick}>
-                        &lt;
-                    </button>
-                )}
-                <div className="morecontents">
-                    {popularMovies.slice(popularIndex, popularIndex + 6).map((movie) => (
-                        <div key={movie.id} className="content1" onClick={() => handleMovieClick(movie)}   >
-                            <img
-                                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                alt={movie.title || movie.name}
-                            />
-                        </div>
-                    ))}
-                </div>
-                {popularIndex < popularMovies.length - 6 && (
-                    <button className="scroll-btn right" onClick={handlePopularRightClick}>
-                        &gt;
-                    </button>
-                )}
-            </div>
-            <h2 className="tittle-2">Top Rated TV Shows</h2>
-            <div className="content-container">
-                {topRatedIndex > 0 && (
-                    <button className="scroll-btn left" onClick={handleTopRatedLeftClick}>
-                        &lt;
-                    </button>
-                )}
-                <div className="morecontents">
-                    {topRatedMovies.slice(topRatedIndex, topRatedIndex + 6).map((movie) => (
-                        <div key={movie.id} className="content1" onClick={() => handleMovieClick(movie)}   >
-                            <img
-                                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                alt={movie.title || movie.name}
-                            />
-                        </div>
-                    ))}
-                </div>
-                {topRatedIndex < topRatedMovies.length - 6 && (
-                    <button className="scroll-btn right" onClick={handleTopRatedRightClick}>
-                        &gt;
-                    </button>
-                )}
-
-            </div>
+            <main className="browse-main" style={{ marginTop: '-10vh', position: 'relative', zIndex: 10 }}>
+                <TvRow title="Trending TV Shows" items={tvs.trending} onCardClick={handleCardClick} />
+                <TvRow title="Popular" items={tvs.popular} onCardClick={handleCardClick} />
+                <TvRow title="Top Rated" items={tvs.topRated} onCardClick={handleCardClick} />
+                <TvRow title="Airing Today" items={tvs.airingToday} onCardClick={handleCardClick} />
+            </main>
             <Footer />
         </div>
     );
 };
 
-export default HomeScreen;
+export default DiscoverTvPage;

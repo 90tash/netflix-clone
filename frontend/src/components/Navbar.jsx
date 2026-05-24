@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import './navbar.css';
 import { Link } from 'react-router-dom';
 import { LogOut, Menu, Search } from 'lucide-react';
@@ -7,9 +8,23 @@ import { useContentStore } from '../stores/content';
 const Navbar = () => {
     const { user, logout } = useAuthStore();
     const { contentType, setContentType } = useContentStore();
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 0) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
-        <header className='header'>
+        <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
             <div className="left-header-items">
                 <Link to={"/"}>
                     <img src='/netflix-logo.png' alt='logo' className='header-logo' />

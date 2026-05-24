@@ -6,9 +6,10 @@ import LoginPage from './pages/LoginPage';
 import MovieDetails from './pages/MovieDetails';
 import TvDetails from './pages/TvDetails';
 import PeopleDetails from './pages/PeopleDetails';
+import MyListPage from './pages/MyListPage';
 import Tv from './pages/home/discover/tv';
- import Movie from './pages/home/discover/movie';
- import SearchPage from './pages/home/discover/search';
+import Movie from './pages/home/discover/movie';
+import SearchPage from './pages/home/discover/search';
 
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './stores/authUser';
@@ -50,6 +51,7 @@ function App() {
          <Route path="/movie" element={!user ? <LoginPage/> :< Movie/>} /> 
          <Route path="/search" element={!user ? <LoginPage/> :< SearchPage/>} /> 
         <Route path="/peopledetails" element={!user?<LoginPage/>:<PeopleDetails />} />
+        <Route path="/mylist" element={!user ? <LoginPage /> : <MyListPage />} />
 
       </Routes>
       <Toaster />

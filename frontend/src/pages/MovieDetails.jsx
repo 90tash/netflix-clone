@@ -2,258 +2,247 @@ import { useLocation, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Play, Info } from "lucide-react";
+import { Play, Info, Volume2, VolumeX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import ReactPlayer from "react-player";
+import "./movieTvDetails.css";
 
 const MovieDetails = () => {
     const { state } = useLocation();
     const [teaser, setTeaser] = useState(null);
     const [trailers, setTrailers] = useState([]);
     const [cast, setCast] = useState([]);
-    const [castIndex, setCastIndex] = useState(0);
-    const [similarMovieIndex, setSimilarMovieIndex] = useState(0);
-    const [similarMovie, setSimilarMovie] = useState([]);
+    const [similarMovies, setSimilarMovies] = useState([]);
+    const [imdbId, setImdbId] = useState(null);
+    const [isMuted, setIsMuted] = useState(false); // Default sound to ON
     const navigate = useNavigate();
-
-    const handleMovieClick = (movie) => {
-      navigate("/moviedetails", { state: { movie } });
-      window.location.reload();
-    };
-    const handleMemberClick = (person) => {
-        navigate("/peopledetails", { state: { person } });
-    };
-
-
-    const handleCastLeftClick = () => {
-        setCastIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    };
-
-    const handleCastRightClick = () => {
-        setCastIndex((prevIndex) =>
-            Math.min(prevIndex + 1, cast.length - 6)
-        );
-    };
-    const handleSimilarMovieLeftClick = () => {
-        setSimilarMovieIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    };
-
-    const handleSimilarMovieRightClick = () => {
-        setSimilarMovieIndex((prevIndex) =>
-            Math.min(prevIndex + 1, similarMovie.length - 6)
-        );
-    };
 
     const movie = state?.movie;
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+        if (!movie) return;
+
         const fetchVideos = async () => {
-            if (!movie || !movie.id) return;
-
             try {
-                // Fetch TV show details to get the list of seasons
-                const detailsResponse = await fetch(
-                    `https://api.themoviedb.org/3/movie/${movie.id}?api_key=e2949b4ae590912c037da493c44407fc`
+                const res = await fetch(
+                    `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=e2949b4ae590912c037da493c44407fc`
                 );
-                const detailsData = await detailsResponse.json();
-
-                const allTrailers = [];
-                let foundTeaser = null;
-
-                // Iterate through seasons and fetch videos
-                for (const season of detailsData.seasons) {
-                    const seasonResponse = await fetch(
-                        `https://api.themoviedb.org/3/movie/${movie.id}/season/${season.season_number}/videos?api_key=e2949b4ae590912c037da493c44407fc`
-                    );
-                    const seasonData = await seasonResponse.json();
-
-                    if (!foundTeaser) {
-                        foundTeaser = seasonData.results.find((video) => video.type === "Teaser");
-                    }
-
-                    const seasonTrailers = seasonData.results.filter((video) => video.type === "Trailer");
-                    allTrailers.push(...seasonTrailers);
-
-                    // Stop if we already have enough trailers
-                    if (allTrailers.length >= 2) break;
-                }
-
+                const data = await res.json();
+                const foundTeaser = data.results.find((v) => v.type === "Teaser");
+                const foundTrailers = data.results.filter((v) => v.type === "Trailer");
+                
                 setTeaser(foundTeaser);
-                setTrailers(allTrailers.slice(0, 2)); // Limit to 2 trailers
+                setTrailers(foundTrailers.slice(0, 2));
             } catch (error) {
                 console.error("Error fetching videos:", error);
             }
         };
 
+        const fetchCast = async () => {
+            try {
+                const res = await fetch(
+                    `https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=e2949b4ae590912c037da493c44407fc`
+                );
+                const data = await res.json();
+                setCast(data.cast.slice(0, 10));
+            } catch (error) {
+                console.error("Error fetching cast:", error);
+            }
+        };
+
+        const fetchSimilar = async () => {
+            try {
+                const res = await fetch(
+                    `https://api.themoviedb.org/3/movie/${movie.id}/similar?api_key=e2949b4ae590912c037da493c44407fc`
+                );
+                const data = await res.json();
+                setSimilarMovies(data.results.slice(0, 10));
+            } catch (error) {
+                console.error("Error fetching similar:", error);
+            }
+        };
+
+        const fetchDetails = async () => {
+            try {
+                const res = await fetch(
+                    `https://api.themoviedb.org/3/movie/${movie.id}?api_key=e2949b4ae590912c037da493c44407fc`
+                );
+                const data = await res.json();
+                setImdbId(data.imdb_id);
+            } catch (error) {
+                console.error("Error fetching movie details:", error);
+            }
+        };
+
         fetchVideos();
         fetchCast();
+        fetchSimilar();
+        fetchDetails();
     }, [movie]);
 
+    if (!movie) return null;
 
-    const fetchCast = (movieId) => {
-        fetch(
-            `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=e2949b4ae590912c037da493c44407fc`
-        )
-            .then((res) => res.json())
-            .then((json) => {
-                setCast(json.cast.slice(0, 6)); // Limit to 6 cast members
-            })
-            .catch((error) => console.error("Error fetching cast:", error));
-    };
-    const fetchSimilarMovie = async (movieId) => {
-        try {
-            const response = await fetch(
-                `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=e2949b4ae590912c037da493c44407fc`
-            );
-            const data = await response.json();
-            setSimilarMovie(data.results.slice(0, 10));
-        } catch (error) {
-            console.error("Error fetching similar movies:", error);
-        }
-    };
-    useEffect(() => {
-        if (movie) {
-            fetchCast(movie.id);
-            fetchSimilarMovie(movie.id);
-        }
-    }, [movie]);
+    const title = movie.title || movie.name;
+    const releaseYear = (movie.release_date || movie.first_air_date || "").slice(0, 4);
 
     return (
-        <>
+        <div className="details-page">
             <Navbar />
-            <div className="viewcontentblock">
-                <div className="maincontent">
-                    <img
-                        className="maincontentbackgroud"
-                        src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-                        alt={movie.title || movie.name}
-                    />
-                </div>
-
-                <div className="whiteborder"></div>
-                <div className="whiteborder2"></div>
-
-                <div className="main">
-                    <img
-                        className="backgroundImage"
-                        src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-                        alt={movie.title || movie.name}
-                    />
-                    <div className="leftblur"></div>
-                    <div className="bottomblur"></div>
-
-                    <div className="round"></div>
-                    <div className="content-title">
-                        <span  className='media-type'>M O V I E</span>
-                        <h1 className="tittle">{movie.title || movie.name}</h1>
-                        <div className="btn-block">
-                            <Link className="play-btn-video" to={"/watch/123"}>
-                                <Play />
-                                Play
-                            </Link>
-                            <Link className="more-info-btn" to={"/watch/123"}>
-                                <Info className="info-icon" />
-                                More Info
-                            </Link>
+            
+            <section className="details-hero">
+                {trailers.length > 0 || teaser ? (
+                    <>
+                        <div className="details-hero-video-wrapper">
+                            <ReactPlayer
+                                className="details-hero-video"
+                                url={`https://www.youtube.com/watch?v=${(trailers[0] || teaser).key}`}
+                                playing={true}
+                                muted={isMuted}
+                                loop={true}
+                                width="100%"
+                                height="100%"
+                                controls={false}
+                                config={{
+                                    youtube: {
+                                        playerVars: { 
+                                            showinfo: 0, 
+                                            modestbranding: 1, 
+                                            rel: 0, 
+                                            iv_load_policy: 3, 
+                                            controls: 0,
+                                            disablekb: 1,
+                                            fs: 0,
+                                            autohide: 1
+                                        }
+                                    }
+                                }}
+                            />
                         </div>
+                        <button 
+                            className="mute-btn" 
+                            onClick={() => setIsMuted(!isMuted)}
+                            aria-label={isMuted ? "Unmute" : "Mute"}
+                        >
+                            {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+                        </button>
+                    </>
+                ) : (
+                    <img
+                        className="details-hero-image"
+                        src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                        alt={title}
+                    />
+                )}
+                <div className="details-hero-shade" />
+                <div className="details-hero-content">
+                    <span className="media-type">M O V I E</span>
+                    <h1>{title}</h1>
+                    <div className="details-actions">
+                        <button className="details-play" onClick={() => document.getElementById('trailers')?.scrollIntoView({ behavior: 'smooth' })}>
+                            <Play fill="currentColor" /> Play
+                        </button>
+                        <button className="details-info" onClick={() => document.getElementById('trailers')?.scrollIntoView({ behavior: 'smooth' })}>
+                            <Info /> More Info
+                        </button>
                     </div>
+                    <div className="details-hero-meta">
+                        {movie.vote_average && (
+                            <span className="rating">
+                                <a 
+                                    href={imdbId ? `https://www.imdb.com/title/${imdbId}` : "#"} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    style={{ textDecoration: 'none' }}
+                                >
+                                    <span className="imdb-badge">IMDb</span>
+                                </a> {movie.vote_average.toFixed(1)} Rating
+                            </span>
+                        )}
+                        <span>{releaseYear}</span>
+                        <span className="maturity">{movie.adult ? "18+" : "12+"}</span>
+                        <span className="hd-badge">HD</span>
+                    </div>
+                    <p className="details-hero-overview">{movie.overview}</p>
                 </div>
-            </div>
+            </section>
 
-            <div className="anothercontent">
-                <h1>{movie.title || movie.name}</h1>
-                <p>
-                    {movie.first_air_date
-                        ? movie.first_air_date.substring(0, 4)
-                        : "N/A"}{" "}
-                    | {movie.adult ? "Adult (18+)" : "Kids, Adult (12+)"} | Rating:{" "}
-                    {movie.vote_average || "N/A"}
-                </p>
-                <h2>{movie.overview}</h2>
-            </div>
+            <main>
+                {/* Info section removed from here as it's now in the hero */}
 
-            <h2 className="tittle-23">Teaser and Trailers</h2>
-            <div className="video-container">
-
-                <div className="video-section">
-                    {teaser && (
-                        <div className="video">
-                            <iframe
-                                src={`https://www.youtube.com/embed/${teaser.key}?modestbranding=1&showinfo=0&rel=0&controls=0&autoplay=0`}
-                                title="Teaser"
-                                allow=" encrypted-media"
-                                allowFullScreen
-                            />
+                {(teaser || trailers.length > 0) && (
+                    <>
+                        <h2 id="trailers" className="details-section-title">Trailers & Extras</h2>
+                        <div className="details-videos">
+                            {teaser && (
+                                <div className="video-wrapper">
+                                    <iframe
+                                        src={`https://www.youtube.com/embed/${teaser.key}`}
+                                        title="Teaser"
+                                        allowFullScreen
+                                    />
+                                </div>
+                            )}
+                            {trailers.map((trailer) => (
+                                <div className="video-wrapper" key={trailer.id}>
+                                    <iframe
+                                        src={`https://www.youtube.com/embed/${trailer.key}`}
+                                        title="Trailer"
+                                        allowFullScreen
+                                    />
+                                </div>
+                            ))}
                         </div>
+                    </>
+                )}
 
-                    )}
-                    {trailers.map((trailer, index) => (
-                        <div className="video" key={index}>
-                            <iframe
-                                src={`https://www.youtube.com/embed/${trailer.key}?modestbranding=1&showinfo=0&rel=0&controls=0&autoplay=0`}
-                                title={`Trailer ${index + 1}`}
-                                allow=" encrypted-media"
-                                allowFullScreen
-                            />
+                {cast.length > 0 && (
+                    <>
+                        <h2 className="details-section-title">Cast</h2>
+                        <div className="details-slider">
+                            {cast.map((person) => (
+                                <div 
+                                    key={person.id} 
+                                    className="cast-card" 
+                                    onClick={() => navigate("/peopledetails", { state: { person } })}
+                                >
+                                    <img
+                                        src={person.profile_path ? `https://image.tmdb.org/t/p/w500${person.profile_path}` : "/avatar1.png"}
+                                        alt={person.name}
+                                    />
+                                    <p>{person.name}</p>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
-            </div>
-
-            <h2 className="tittle-2">Cast</h2>
-            <div className="content-container">
-                {castIndex > 0 && (
-                    <button className="scroll-btn left" onClick={handleCastLeftClick}>
-                        &lt;
-                    </button>
+                    </>
                 )}
-                <div className="morecontents">
-                    {cast.slice(castIndex, castIndex + 6).map((person) => (
-                        <div key={person.id} className="content1" onClick={()=>handleMemberClick(person)} >
-                            <img
-                                src={`https://image.tmdb.org/t/p/w500${person.profile_path}`}
-                                alt={person.name}
-                            />
-                            <p>{person.name}</p>
+
+                {similarMovies.length > 0 && (
+                    <>
+                        <h2 className="details-section-title">Similar Movies</h2>
+                        <div className="details-slider">
+                            {similarMovies.map((similar) => (
+                                <div 
+                                    key={similar.id} 
+                                    className="similar-card" 
+                                    onClick={() => {
+                                        navigate("/moviedetails", { state: { movie: similar } });
+                                        window.scrollTo(0, 0);
+                                    }}
+                                >
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w500${similar.poster_path}`}
+                                        alt={similar.title || similar.name}
+                                    />
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
-                {castIndex < cast.length - 6 && (
-                    <button className="scroll-btn right" onClick={handleCastRightClick}>
-                        &gt;
-                    </button>
+                    </>
                 )}
-            </div>
-            <h2 className="tittle-24">Similar Movies like "{movie.title || movie.name}"</h2>
-            <div className="content-container">
-                {similarMovieIndex > 0 && (
-                    <button className="scroll-btn left" onClick={handleSimilarMovieLeftClick} >
-                        &lt;
-                    </button>
-                )}
-                <div className="morecontents">
-                    {similarMovie.slice(similarMovieIndex, similarMovieIndex + 6).map((similar) => (
-                        <div key={similar.id} className="content1" onClick={()=> handleMovieClick(similar)}  >
-                            <img
-                                src={`https://image.tmdb.org/t/p/w500${similar.poster_path}`}
-                                alt={similar.name}
-                            />
-                            <p>{similar.name}</p>
-                        </div>
-                    ))}
-                </div>
-                {similarMovieIndex < similarMovie.length - 6 && (
-                    <button className="scroll-btn right"  onClick={handleSimilarMovieRightClick} >
-                        &gt;
-                    </button>
-                )}
-            </div>
-
-
-
-
+            </main>
 
             <Footer />
-        </>
+        </div>
     );
 };
 

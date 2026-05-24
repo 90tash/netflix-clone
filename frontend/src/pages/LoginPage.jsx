@@ -10,7 +10,7 @@ const LoginPage = () => {
   const [ password, setPassword ] = useState("");
   const {login}= useAuthStore();
 
-  const handleSingIn = (e) =>{
+  const handleSignIn = (e) =>{
     e.preventDefault();
    login({email,password});
 
@@ -19,34 +19,41 @@ const LoginPage = () => {
   return (
     <div className="body">
       <div className="home">
-        <div className="navbar">
-          <div className="left-navbar-items"><Link to={"/"}>
-					<img src='/netflix-logo.png' alt='logo' className='logo' />
-				</Link></div>
+        <header className="navbar">
+          <Link to={"/"}>
+            <img src='/netflix-logo.png' alt='Netflix' className='logo' />
+          </Link>
+        </header>
 
-        </div>
-
-
-        <div className="singin-block">
+        <main className="singin-block">
           <div className="inside-singin-block">
             <h1>Sign In</h1>
-            <form onSubmit={handleSingIn}>
-            <label htmlFor='email' className='lable'>Email</label>
-            <input type="email" placeholder='ex: you@example.com' id='email' value={email} onChange={(e) => setEmail(e.target.value)} />
-            <label htmlFor='password' className='lable'>Password</label>
-            <input type="password" placeholder='• • • • • • •' id='password' value={password} onChange={(e) => setPassword(e.target.value)} />
-              <button className='login-btn'>Sign In</button>
-              <p>OR</p>
+            <form onSubmit={handleSignIn}>
+              <input 
+                type="email" 
+                placeholder='Email or phone number' 
+                id='email' 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                required 
+              />
+              <input 
+                type="password" 
+                placeholder='Password' 
+                id='password' 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                required 
+              />
+              <button type="submit" className='login-btn'>Sign In</button>
             </form>
             <div className='singn'>
-              Don't have an account?{"  "}
-              <Link className='link-tag' to={"/signup"}>Sing Up</Link>
+              New to Netflix?
+              <Link className='link-tag' to={"/signup"}>Sign up now</Link>
             </div>
-            <p>This page is protected by Google reCAPTCHA to ensure you're not a bot. </p>
-
+            <p>This page is protected by Google reCAPTCHA to ensure you're not a bot. <Link to="#" className="link-tag">Learn more.</Link></p>
           </div>
-        </div>
-
+        </main>
       </div>
       <Footer/>
     </div>

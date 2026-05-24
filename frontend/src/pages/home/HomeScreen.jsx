@@ -1,5 +1,5 @@
-import { Info, Play } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Info, Play, ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -27,8 +27,63 @@ const rows = [
     },
 ];
 
+const MovieRow = ({ row, openDetails }) => {
+    const sliderRef = useRef(null);
+    const [showLeftArrow, setShowLeftArrow] = useState(false);
+
+    const scroll = (direction) => {
+        if (sliderRef.current) {
+            const { scrollLeft, clientWidth } = sliderRef.current;
+            const scrollTo = direction === 'left' ? scrollLeft - clientWidth : scrollLeft + clientWidth;
+            sliderRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+        }
+    };
+
+    const handleScroll = () => {
+        if (sliderRef.current) {
+            setShowLeftArrow(sliderRef.current.scrollLeft > 0);
+        }
+    };
+
+    return (
+        <section className="browse-row">
+            <h2>{row.title}</h2>
+            <div className="slider-wrapper">
+                {showLeftArrow && (
+                    <button className="row-arrow left" onClick={() => scroll('left')}>
+                        <ChevronLeft size={40} />
+                    </button>
+                )}
+                
+                <div className="browse-slider" ref={sliderRef} onScroll={handleScroll}>
+                    {row.items.map((item) => (
+                        <button
+                            type="button"
+                            className="browse-card"
+                            key={`${row.title}-${item.id}`}
+                            onClick={() => openDetails(item)}
+                        >
+                            <img
+                                src={`${IMAGE_BASE}/w500${item.backdrop_path || item.poster_path}`}
+                                alt={item.title || item.name || "Movie poster"}
+                            />
+                            <span className="card-title">{item.title || item.name}</span>
+                        </button>
+                    ))}
+                </div>
+
+                <button className="row-arrow right" onClick={() => scroll('right')}>
+                    <ChevronRight size={40} />
+                </button>
+            </div>
+        </section>
+    );
+};
+
 const HomeScreen = () => {
     const [heroContent, setHeroContent] = useState(null);
+    const [heroCandidates, setHeroCandidates] = useState([]);
+    const [heroIndex, setHeroIndex] = useState(0);
     const [contentRows, setContentRows] = useState([]);
     const navigate = useNavigate();
 
@@ -45,8 +100,9 @@ const HomeScreen = () => {
 
                 setContentRows(nextRows);
 
-                const heroCandidates = (payloads[0].results || []).filter((item) => item.backdrop_path);
-                setHeroContent(heroCandidates[0] || null);
+                const candidates = (payloads[0].results || []).filter((item) => item.backdrop_path);
+                setHeroCandidates(candidates);
+                setHeroContent(candidates[0] || null);
             } catch (error) {
                 console.error("Error loading homepage content:", error);
             }
@@ -54,6 +110,23 @@ const HomeScreen = () => {
 
         loadHomeContent();
     }, []);
+
+    // Auto-rotate hero content every 8 seconds
+    useEffect(() => {
+        if (heroCandidates.length === 0) return;
+
+        const interval = setInterval(() => {
+            setHeroIndex((prev) => (prev + 1) % Math.min(heroCandidates.length, 10));
+        }, 8000);
+
+        return () => clearInterval(interval);
+    }, [heroCandidates]);
+
+    useEffect(() => {
+        if (heroCandidates.length > 0) {
+            setHeroContent(heroCandidates[heroIndex]);
+        }
+    }, [heroIndex, heroCandidates]);
 
     const openDetails = (item) => {
         if (item.media_type === "tv" || item.name) {
@@ -90,11 +163,11 @@ const HomeScreen = () => {
                     </div>
                     <p>{heroContent?.overview || "Movies, shows, trailers and more are ready to watch."}</p>
                     <div className="browse-actions">
-                        <button type="button" className="browse-play">
+                        <button type="button" className="browse-play" onClick={() => openDetails(heroContent)}>
                             <Play size={20} fill="currentColor" />
                             Play
                         </button>
-                        <button type="button" className="browse-info">
+                        <button type="button" className="browse-info" onClick={() => openDetails(heroContent)}>
                             <Info size={20} />
                             More Info
                         </button>
@@ -104,25 +177,7 @@ const HomeScreen = () => {
 
             <main className="browse-main">
                 {contentRows.map((row) => (
-                    <section className="browse-row" key={row.title}>
-                        <h2>{row.title}</h2>
-                        <div className="browse-slider">
-                            {row.items.map((item) => (
-                                <button
-                                    type="button"
-                                    className="browse-card"
-                                    key={`${row.title}-${item.id}`}
-                                    onClick={() => openDetails(item)}
-                                >
-                                    <img
-                                        src={`${IMAGE_BASE}/w500${item.poster_path}`}
-                                        alt={item.title || item.name || "Movie poster"}
-                                    />
-                                    <span>{item.title || item.name}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </section>
+                    <MovieRow key={row.title} row={row} openDetails={openDetails} />
                 ))}
             </main>
 
