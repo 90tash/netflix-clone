@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "./peopleDetails.css";
+import { getTitle, imageUrl, tmdbFetch } from "../utils/tmdb";
 
 const PeopleDetails = () => {
   const location = useLocation();
@@ -20,13 +21,10 @@ const PeopleDetails = () => {
     const fetchDetails = async () => {
       try {
         setIsLoading(true);
-        const [detailsRes, creditsRes] = await Promise.all([
-          fetch(`https://api.themoviedb.org/3/person/${person.id}?api_key=e2949b4ae590912c037da493c44407fc`),
-          fetch(`https://api.themoviedb.org/3/person/${person.id}/combined_credits?api_key=e2949b4ae590912c037da493c44407fc`)
+        const [detailsData, creditsData] = await Promise.all([
+          tmdbFetch(`/person/${person.id}`),
+          tmdbFetch(`/person/${person.id}/combined_credits`)
         ]);
-
-        const detailsData = await detailsRes.json();
-        const creditsData = await creditsRes.json();
 
         setDetails(detailsData);
         setCredits(creditsData.cast.sort((a, b) => (b.vote_count || 0) - (a.vote_count || 0)).slice(0, 20));
@@ -55,7 +53,7 @@ const PeopleDetails = () => {
       <main className="people-container">
         <aside className="people-sidebar">
           <img
-            src={details.profile_path ? `https://image.tmdb.org/t/p/h632${details.profile_path}` : "/avatar1.png"}
+            src={imageUrl(details.profile_path, "h632", "/avatar1.png")}
             alt={details.name}
           />
           <h2>Personal Info</h2>
@@ -97,10 +95,10 @@ const PeopleDetails = () => {
                   onClick={() => handleCreditClick(credit)}
                 >
                   <img
-                    src={credit.poster_path ? `https://image.tmdb.org/t/p/w342${credit.poster_path}` : "/404.png"}
-                    alt={credit.title || credit.name}
+                    src={imageUrl(credit.poster_path, "w342")}
+                    alt={getTitle(credit)}
                   />
-                  <p>{credit.title || credit.name}</p>
+                  <p>{getTitle(credit)}</p>
                 </div>
               ))}
             </div>

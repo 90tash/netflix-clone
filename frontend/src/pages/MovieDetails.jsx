@@ -1,4 +1,4 @@
-import { useLocation, Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -6,6 +6,7 @@ import { Play, Info, Volume2, VolumeX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
 import "./movieTvDetails.css";
+import { getTitle, imageUrl, tmdbFetch } from "../utils/tmdb";
 
 const MovieDetails = () => {
     const { state } = useLocation();
@@ -25,10 +26,7 @@ const MovieDetails = () => {
 
         const fetchVideos = async () => {
             try {
-                const res = await fetch(
-                    `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=e2949b4ae590912c037da493c44407fc`
-                );
-                const data = await res.json();
+                const data = await tmdbFetch(`/movie/${movie.id}/videos`);
                 const foundTeaser = data.results.find((v) => v.type === "Teaser");
                 const foundTrailers = data.results.filter((v) => v.type === "Trailer");
                 
@@ -41,10 +39,7 @@ const MovieDetails = () => {
 
         const fetchCast = async () => {
             try {
-                const res = await fetch(
-                    `https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=e2949b4ae590912c037da493c44407fc`
-                );
-                const data = await res.json();
+                const data = await tmdbFetch(`/movie/${movie.id}/credits`);
                 setCast(data.cast.slice(0, 10));
             } catch (error) {
                 console.error("Error fetching cast:", error);
@@ -53,10 +48,7 @@ const MovieDetails = () => {
 
         const fetchSimilar = async () => {
             try {
-                const res = await fetch(
-                    `https://api.themoviedb.org/3/movie/${movie.id}/similar?api_key=e2949b4ae590912c037da493c44407fc`
-                );
-                const data = await res.json();
+                const data = await tmdbFetch(`/movie/${movie.id}/similar`);
                 setSimilarMovies(data.results.slice(0, 10));
             } catch (error) {
                 console.error("Error fetching similar:", error);
@@ -65,10 +57,7 @@ const MovieDetails = () => {
 
         const fetchDetails = async () => {
             try {
-                const res = await fetch(
-                    `https://api.themoviedb.org/3/movie/${movie.id}?api_key=e2949b4ae590912c037da493c44407fc`
-                );
-                const data = await res.json();
+                const data = await tmdbFetch(`/movie/${movie.id}`);
                 setImdbId(data.imdb_id);
             } catch (error) {
                 console.error("Error fetching movie details:", error);
@@ -83,7 +72,7 @@ const MovieDetails = () => {
 
     if (!movie) return null;
 
-    const title = movie.title || movie.name;
+    const title = getTitle(movie);
     const releaseYear = (movie.release_date || movie.first_air_date || "").slice(0, 4);
 
     return (
@@ -130,7 +119,7 @@ const MovieDetails = () => {
                 ) : (
                     <img
                         className="details-hero-image"
-                        src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                        src={imageUrl(movie.backdrop_path, "original")}
                         alt={title}
                     />
                 )}
@@ -212,7 +201,7 @@ const MovieDetails = () => {
                                     onClick={() => navigate("/peopledetails", { state: { person } })}
                                 >
                                     <img
-                                        src={person.profile_path ? `https://image.tmdb.org/t/p/w500${person.profile_path}` : "/avatar1.png"}
+                                        src={imageUrl(person.profile_path, "w500", "/avatar1.png")}
                                         alt={person.name}
                                     />
                                     <p>{person.name}</p>
@@ -236,8 +225,8 @@ const MovieDetails = () => {
                                     }}
                                 >
                                     <img
-                                        src={`https://image.tmdb.org/t/p/w500${similar.poster_path}`}
-                                        alt={similar.title || similar.name}
+                                        src={imageUrl(similar.backdrop_path || similar.poster_path, "w500")}
+                                        alt={getTitle(similar)}
                                     />
                                 </div>
                             ))}

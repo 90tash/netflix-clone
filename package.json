@@ -1,5 +1,5 @@
 {
-  "name": "netflix-clone-frontend",
+  "name": "epicstream",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -12,5 +12,5 @@
   "author": "",
   "type": "module",
   "license": "ISC",
-  "description": "Frontend-only Netflix-style React web app using TMDB API."
+  "description": "Frontend-only EpicStream movie and TV discovery app using TMDB API."
 }

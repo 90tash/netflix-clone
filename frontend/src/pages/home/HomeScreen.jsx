@@ -1,79 +1,155 @@
-import { Info, Play, ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+/* eslint-disable react/prop-types */
+import { ChevronLeft, ChevronRight, Compass, Flame, Info, Play, Star } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { formatMediaType, getMediaType, getRating, getTitle, getYear, imageUrl, tmdbFetch, tmdbGetImages } from "../../utils/tmdb";
 import "./homescreen.css";
 
-const TMDB_API_KEY = "e2949b4ae590912c037da493c44407fc";
-const IMAGE_BASE = "https://image.tmdb.org/t/p";
-
 const rows = [
-    {
-        title: "Trending Now",
-        url: `https://api.themoviedb.org/3/trending/all/day?language=en-US&api_key=${TMDB_API_KEY}`,
-    },
-    {
-        title: "Popular Movies",
-        url: `https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&api_key=${TMDB_API_KEY}`,
-    },
-    {
-        title: "Top Rated TV Shows",
-        url: `https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1&api_key=${TMDB_API_KEY}`,
-    },
-    {
-        title: "Upcoming Movies",
-        url: `https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1&api_key=${TMDB_API_KEY}`,
-    },
+    { title: "TOP 10 Today", path: "/trending/all/day", topTen: true },
+    { title: "Trending Today", path: "/trending/all/day" },
+    { title: "Popular Movies", path: "/movie/popular" },
+    { title: "Popular Shows", path: "/tv/popular" },
+    { title: "Top Rated: Movies", path: "/movie/top_rated" },
+    { title: "Top Rated: Series", path: "/tv/top_rated" },
 ];
+
+const HeroSkeleton = () => (
+    <section className="browse-hero skeleton">
+        <div className="browse-hero-shade" />
+        <div className="browse-hero-content">
+            <div className="skeleton-label" />
+            <div className="skeleton-title" />
+            <div className="skeleton-meta" />
+            <div className="skeleton-overview" />
+            <div className="browse-actions">
+                <div className="skeleton-btn" />
+                <div className="skeleton-btn" />
+            </div>
+        </div>
+    </section>
+);
+
+const RowSkeleton = ({ topTen }) => (
+    <section className="browse-row">
+        <div className="skeleton-row-title" />
+        <div className="slider-wrapper">
+            <div className={`browse-slider ${topTen ? "top-ten-slider" : ""}`}>
+                {[...Array(6)].map((_, i) => (
+                    <div key={i} className={`browse-card skeleton-card ${topTen ? "top-ten-card" : ""}`} />
+                ))}
+            </div>
+        </div>
+    </section>
+);
+
+const RowHeader = ({ row }) => {
+    return (
+        <div className="row-heading">
+            {row.title && <h2 className="section-title">{row.title}</h2>}
+        </div>
+    );
+};
+
+const MovieCard = ({ item, row, index, openDetails }) => {
+    const type = getMediaType(item);
+    const rating = getRating(item);
+
+    return (
+        <button
+            type="button"
+            className={`browse-card ${row.topTen ? "top-ten-card" : ""}`}
+            key={`${row.title}-${item.id}-${type}`}
+            onClick={() => openDetails(item)}
+        >
+            {row.topTen && (
+                <span className="rank-ribbon">
+                    <span className="ribbon-text">TOP</span>
+                    <span className="ribbon-number">{(index + 1).toString().padStart(2, '0')}</span>
+                </span>
+            )}
+            <div className="card-img-wrapper">
+                <img 
+                    src={imageUrl(row.topTen ? (item.poster_path || item.backdrop_path) : (item.backdrop_path || item.poster_path), "w780")} 
+                    alt={getTitle(item)} 
+                    loading="lazy"
+                />
+            </div>
+            <span className="card-title">{getTitle(item)}</span>
+            <span className="card-meta">
+                {rating && (
+                    <>
+                        <Star size={13} fill="currentColor" />
+                        {rating}
+                        <span className="dot" />
+                    </>
+                )}
+                {getYear(item) && (
+                    <>
+                        {getYear(item)}
+                        <span className="dot" />
+                    </>
+                )}
+                {formatMediaType(type)}
+            </span>
+        </button>
+    );
+};
 
 const MovieRow = ({ row, openDetails }) => {
     const sliderRef = useRef(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
+    const [items, setItems] = useState(row.items || []);
+    const [isLoading, setIsLoading] = useState(!row.items);
+
+    useEffect(() => {
+        if (row.items) {
+            setItems(row.items);
+            setIsLoading(false);
+        }
+    }, [row.items]);
 
     const scroll = (direction) => {
-        if (sliderRef.current) {
-            const { scrollLeft, clientWidth } = sliderRef.current;
-            const scrollTo = direction === 'left' ? scrollLeft - clientWidth : scrollLeft + clientWidth;
-            sliderRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
-        }
+        if (!sliderRef.current) return;
+        const { scrollLeft, clientWidth } = sliderRef.current;
+        sliderRef.current.scrollTo({
+            left: direction === "left" ? scrollLeft - clientWidth : scrollLeft + clientWidth,
+            behavior: "smooth",
+        });
     };
 
-    const handleScroll = () => {
-        if (sliderRef.current) {
-            setShowLeftArrow(sliderRef.current.scrollLeft > 0);
-        }
-    };
+    if (isLoading) return <RowSkeleton topTen={row.topTen} />;
 
     return (
         <section className="browse-row">
-            <h2>{row.title}</h2>
+            <RowHeader row={row} />
             <div className="slider-wrapper">
                 {showLeftArrow && (
-                    <button className="row-arrow left" onClick={() => scroll('left')}>
-                        <ChevronLeft size={40} />
+                    <button className="row-arrow left" onClick={() => scroll("left")} aria-label="Scroll left">
+                        <ChevronLeft size={36} />
                     </button>
                 )}
-                
-                <div className="browse-slider" ref={sliderRef} onScroll={handleScroll}>
-                    {row.items.map((item) => (
-                        <button
-                            type="button"
-                            className="browse-card"
-                            key={`${row.title}-${item.id}`}
-                            onClick={() => openDetails(item)}
-                        >
-                            <img
-                                src={`${IMAGE_BASE}/w500${item.backdrop_path || item.poster_path}`}
-                                alt={item.title || item.name || "Movie poster"}
-                            />
-                            <span className="card-title">{item.title || item.name}</span>
-                        </button>
+
+                <div
+                    className={`browse-slider ${row.topTen ? "top-ten-slider" : ""}`}
+                    ref={sliderRef}
+                    onScroll={() => setShowLeftArrow(sliderRef.current?.scrollLeft > 0)}
+                >
+                    {items.map((item, index) => (
+                        <MovieCard 
+                            key={`${row.title}-${item.id}`} 
+                            item={item} 
+                            row={row} 
+                            index={index}
+                            openDetails={openDetails} 
+                        />
                     ))}
                 </div>
 
-                <button className="row-arrow right" onClick={() => scroll('right')}>
-                    <ChevronRight size={40} />
+                <button className="row-arrow right" onClick={() => scroll("right")} aria-label="Scroll right">
+                    <ChevronRight size={36} />
                 </button>
             </div>
         </section>
@@ -84,21 +160,17 @@ const HomeScreen = () => {
     const [heroContent, setHeroContent] = useState(null);
     const [heroCandidates, setHeroCandidates] = useState([]);
     const [heroIndex, setHeroIndex] = useState(0);
-    const [contentRows, setContentRows] = useState([]);
+    const [contentRows, setContentRows] = useState(rows.map(r => ({ ...r, items: null })));
     const [heroImdbId, setHeroImdbId] = useState(null);
+    const [isLoadingHero, setIsLoadingHero] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchImdbId = async () => {
             if (!heroContent) return;
             try {
-                const isTv = heroContent.media_type === "tv" || heroContent.name;
-                const endpoint = isTv
-                    ? `https://api.themoviedb.org/3/tv/${heroContent.id}/external_ids?api_key=${TMDB_API_KEY}`
-                    : `https://api.themoviedb.org/3/movie/${heroContent.id}?api_key=${TMDB_API_KEY}`;
-                
-                const res = await fetch(endpoint);
-                const data = await res.json();
+                const isTv = getMediaType(heroContent) === "tv";
+                const data = await tmdbFetch(isTv ? `/tv/${heroContent.id}/external_ids` : `/movie/${heroContent.id}`);
                 setHeroImdbId(data.imdb_id);
             } catch (error) {
                 console.error("Error fetching hero IMDB ID:", error);
@@ -109,35 +181,36 @@ const HomeScreen = () => {
     }, [heroContent]);
 
     useEffect(() => {
-        const loadHomeContent = async () => {
+        const loadRow = async (rowIndex) => {
             try {
-                const responses = await Promise.all(rows.map((row) => fetch(row.url)));
-                const payloads = await Promise.all(responses.map((response) => response.json()));
+                const row = rows[rowIndex];
+                const data = await tmdbFetch(row.path, row.params);
+                const results = (data.results || []).filter((item) => item.backdrop_path || item.poster_path).slice(0, row.topTen ? 10 : 20);
+                
+                setContentRows(prev => {
+                    const next = [...prev];
+                    next[rowIndex] = { ...next[rowIndex], items: results };
+                    return next;
+                });
 
-                const nextRows = rows.map((row, index) => ({
-                    title: row.title,
-                    items: (payloads[index].results || []).filter((item) => item.poster_path),
-                }));
-
-                setContentRows(nextRows);
-
-                const candidates = (payloads[0].results || []).filter((item) => item.backdrop_path);
-                setHeroCandidates(candidates);
-                setHeroContent(candidates[0] || null);
+                // Use the first row for hero candidates
+                if (rowIndex === 0) {
+                    setHeroCandidates(results);
+                    setHeroContent(results[0] || null);
+                    setIsLoadingHero(false);
+                }
             } catch (error) {
-                console.error("Error loading homepage content:", error);
+                console.error(`Error loading row ${rowIndex}:`, error);
             }
         };
 
-        loadHomeContent();
+        rows.forEach((_, index) => loadRow(index));
     }, []);
 
-    // Auto-rotate hero content every 8 seconds
     useEffect(() => {
-        if (heroCandidates.length === 0) return;
-
+        if (heroCandidates.length === 0) return undefined;
         const interval = setInterval(() => {
-            setHeroIndex((prev) => (prev + 1) % Math.min(heroCandidates.length, 10));
+            setHeroIndex((prev) => (prev + 1) % heroCandidates.length);
         }, 8000);
 
         return () => clearInterval(interval);
@@ -150,7 +223,8 @@ const HomeScreen = () => {
     }, [heroIndex, heroCandidates]);
 
     const openDetails = (item) => {
-        if (item.media_type === "tv" || item.name) {
+        if (!item) return;
+        if (getMediaType(item) === "tv") {
             navigate("/tvdetails", { state: { movie: item, type: "tv" } });
             return;
         }
@@ -158,49 +232,53 @@ const HomeScreen = () => {
         navigate("/moviedetails", { state: { movie: item, type: "movie" } });
     };
 
-    const title = heroContent?.title || heroContent?.name || "Loading...";
-    const releaseYear = (heroContent?.release_date || heroContent?.first_air_date || "").slice(0, 4);
+    const title = getTitle(heroContent);
+    const releaseYear = getYear(heroContent);
+    const rating = getRating(heroContent);
 
     return (
-        <div className="netflix-home">
+        <div className="epicstream-home">
             <Navbar />
 
-            <section className="browse-hero">
-                {heroContent?.backdrop_path && (
-                    <img
-                        className="browse-hero-image"
-                        src={`${IMAGE_BASE}/original${heroContent.backdrop_path}`}
-                        alt={title}
-                    />
-                )}
-                <div className="browse-hero-shade" />
-                <div className="browse-hero-content">
-                    <span className="browse-label">NETFLIX ORIGINAL</span>
-                    <h1>{title}</h1>
-                    <div className="browse-meta">
-                        {releaseYear && <span>{releaseYear}</span>}
-                        {heroContent?.vote_average && <span>{heroContent.vote_average.toFixed(1)} Rating</span>}
-                        <span>HD</span>
+            {isLoadingHero ? <HeroSkeleton /> : (
+                <section className="browse-hero">
+                    {heroContent?.backdrop_path && (
+                        <img 
+                            key={heroContent.id + "-image"}
+                            className="browse-hero-image" 
+                            src={imageUrl(heroContent.backdrop_path, "w1280")} 
+                            alt={title} 
+                        />
+                    )}
+                    <div className="browse-hero-shade" />
+                    <div key={heroContent?.id + "-content"} className="browse-hero-content">
+                        <h1>{title}</h1>
+                        <div className="browse-meta">
+                            {rating && (
+                                <span className="rating"><Star size={15} fill="currentColor" /> {rating}</span>
+                            )}
+                            {releaseYear && <span>{releaseYear}</span>}
+                            <span>{formatMediaType(getMediaType(heroContent))}</span>
+                        </div>
+                        <p>{heroContent?.overview || "Movies, shows, trailers and more are ready to watch."}</p>
+                        <div className="browse-actions">
+                            <button
+                                type="button"
+                                className="browse-play"
+                                onClick={() => {
+                                    if (heroImdbId) window.location.href = `https://www.playimdb.com/title/${heroImdbId}`;
+                                }}
+                            >
+                                <Play size={20} fill="currentColor" />
+                                Play
+                            </button>
+                            <button type="button" className="browse-info" onClick={() => openDetails(heroContent)}>
+                                <Info size={20} />
+                                See More
+                            </button>
+                        </div>
                     </div>
-                    <p>{heroContent?.overview || "Movies, shows, trailers and more are ready to watch."}</p>
-                    <div className="browse-actions">
-                        <button 
-                            type="button" 
-                            className="browse-play" 
-                            onClick={() => {
-                                if (heroImdbId) window.location.href = `https://www.playimdb.com/title/${heroImdbId}`;
-                            }}
-                        >
-                            <Play size={20} fill="currentColor" />
-                            Play
-                        </button>
-                        <button type="button" className="browse-info" onClick={() => openDetails(heroContent)}>
-                            <Info size={20} />
-                            More Info
-                        </button>
-                    </div>
-                </div>
-            </section>
+                </section>            )}
 
             <main className="browse-main">
                 {contentRows.map((row) => (

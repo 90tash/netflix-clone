@@ -1,4 +1,4 @@
-import { useLocation, Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -6,6 +6,7 @@ import { Play, Info, Volume2, VolumeX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
 import "./movieTvDetails.css";
+import { getTitle, imageUrl, tmdbFetch } from "../utils/tmdb";
 
 const TvDetails = () => {
     const { state } = useLocation();
@@ -26,19 +27,13 @@ const TvDetails = () => {
         const fetchVideos = async () => {
             try {
                 // Fetch basic videos first
-                const res = await fetch(
-                    `https://api.themoviedb.org/3/tv/${tv.id}/videos?api_key=e2949b4ae590912c037da493c44407fc`
-                );
-                const data = await res.json();
+                const data = await tmdbFetch(`/tv/${tv.id}/videos`);
                 let foundTeaser = data.results.find((v) => v.type === "Teaser");
                 let foundTrailers = data.results.filter((v) => v.type === "Trailer");
                 
                 // If no trailers in main, try season 1
                 if (foundTrailers.length === 0) {
-                    const sres = await fetch(
-                        `https://api.themoviedb.org/3/tv/${tv.id}/season/1/videos?api_key=e2949b4ae590912c037da493c44407fc`
-                    );
-                    const sdata = await sres.json();
+                    const sdata = await tmdbFetch(`/tv/${tv.id}/season/1/videos`);
                     if (!foundTeaser) foundTeaser = sdata.results.find((v) => v.type === "Teaser");
                     foundTrailers = sdata.results.filter((v) => v.type === "Trailer");
                 }
@@ -52,10 +47,7 @@ const TvDetails = () => {
 
         const fetchCast = async () => {
             try {
-                const res = await fetch(
-                    `https://api.themoviedb.org/3/tv/${tv.id}/credits?api_key=e2949b4ae590912c037da493c44407fc`
-                );
-                const data = await res.json();
+                const data = await tmdbFetch(`/tv/${tv.id}/credits`);
                 setCast(data.cast.slice(0, 10));
             } catch (error) {
                 console.error("Error fetching cast:", error);
@@ -64,10 +56,7 @@ const TvDetails = () => {
 
         const fetchSimilar = async () => {
             try {
-                const res = await fetch(
-                    `https://api.themoviedb.org/3/tv/${tv.id}/similar?api_key=e2949b4ae590912c037da493c44407fc`
-                );
-                const data = await res.json();
+                const data = await tmdbFetch(`/tv/${tv.id}/similar`);
                 setSimilarTv(data.results.slice(0, 10));
             } catch (error) {
                 console.error("Error fetching similar:", error);
@@ -76,10 +65,7 @@ const TvDetails = () => {
 
         const fetchExternalIds = async () => {
             try {
-                const res = await fetch(
-                    `https://api.themoviedb.org/3/tv/${tv.id}/external_ids?api_key=e2949b4ae590912c037da493c44407fc`
-                );
-                const data = await res.json();
+                const data = await tmdbFetch(`/tv/${tv.id}/external_ids`);
                 setImdbId(data.imdb_id);
             } catch (error) {
                 console.error("Error fetching TV details:", error);
@@ -94,7 +80,7 @@ const TvDetails = () => {
 
     if (!tv) return null;
 
-    const title = tv.name || tv.title;
+    const title = getTitle(tv);
     const releaseYear = (tv.first_air_date || tv.release_date || "").slice(0, 4);
 
     return (
@@ -141,7 +127,7 @@ const TvDetails = () => {
                 ) : (
                     <img
                         className="details-hero-image"
-                        src={`https://image.tmdb.org/t/p/original${tv.backdrop_path}`}
+                        src={imageUrl(tv.backdrop_path, "original")}
                         alt={title}
                     />
                 )}
@@ -223,7 +209,7 @@ const TvDetails = () => {
                                     onClick={() => navigate("/peopledetails", { state: { person } })}
                                 >
                                     <img
-                                        src={person.profile_path ? `https://image.tmdb.org/t/p/w500${person.profile_path}` : "/avatar1.png"}
+                                        src={imageUrl(person.profile_path, "w500", "/avatar1.png")}
                                         alt={person.name}
                                     />
                                     <p>{person.name}</p>
@@ -247,8 +233,8 @@ const TvDetails = () => {
                                     }}
                                 >
                                     <img
-                                        src={`https://image.tmdb.org/t/p/w500${similar.poster_path}`}
-                                        alt={similar.name || similar.title}
+                                        src={imageUrl(similar.backdrop_path || similar.poster_path, "w500")}
+                                        alt={getTitle(similar)}
                                     />
                                 </div>
                             ))}

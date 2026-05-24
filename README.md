@@ -1,36 +1,27 @@
-# Netflix Clone
+# EpicStream
 
-A high-fidelity Netflix-style React web app built with Vite, CSS, JavaScript, and TMDB API data. This project features a polished, responsive streaming interface with immersive design elements and direct playback integration.
+EpicStream is a frontend movie and TV discovery app built with React, Vite, CSS, and TMDB data. It uses a dark cinematic interface with wide content rows, immersive hero artwork, search overlays, detail pages, trailers, cast information, and curated browsing sections.
 
 ## Features
 
-- **Immersive Hero Section**: Auto-rotating hero content with dynamic background images and direct "Play" integration to IMDB players.
-- **Dynamic Content Rows**: Perfectly aligned movie and TV show cards with titles displayed below, featuring synchronized 1.05x scale hover effects.
-- **External Player Integration**: "Play" buttons across the Homepage, Movie, and TV pages link directly to external IMDB players via `playimdb.com`.
-- **Comprehensive Details Pages**: Rich media pages for movies and TV shows including trailers (React Player), cast info, ratings, and similar content suggestions.
-- **Universal Search**: Multi-type search functionality for finding movies, TV shows, and people.
-- **Secure-Simulated Flow**: Full authentication UI (Login/Signup/Logout) with protected routes managed via Zustand and localStorage.
-- **Enhanced Footer**: Professional footer with localized information and social media integration (GitHub, LinkedIn).
+- Immersive auto-rotating hero section with TMDB backdrop imagery.
+- Wide horizontal movie and TV rows with ratings, years, media types, and Top 10 badges.
+- Cinematic search overlay with category filtering, expandable result previews, and detail navigation.
+- Movie, TV, and people detail pages with trailers, cast, metadata, and similar titles.
+- EpicStream branding with a custom red streaming-style wordmark.
+- Frontend-only demo architecture with direct TMDB API usage.
 
 ## Tech Stack
 
-- **Frontend**: React 18, Vite, JavaScript (ES6+)
-- **Styling**: Vanilla CSS (Custom properties, Flexbox/Grid animations)
-- **State Management**: Zustand
-- **Routing**: React Router DOM
-- **Icons**: Lucide React
-- **Media**: React Player (YouTube integration)
-- **API**: TMDB (The Movie Database)
-
-## Resume Description
-
-**Netflix Clone - High-Fidelity React Web App | React, Zustand, TMDB API, CSS**
-
-- Developed a feature-rich Netflix replica featuring dynamic content rows, a multi-stop gradient hero section, and responsive design for all device tiers.
-- Integrated TMDB API to fetch and display real-time cinematic data, including posters, ratings, trailers, and cast biographies.
-- Engineered a custom "Play" logic that bridges the UI with external IMDB players, utilizing media-specific external IDs.
-- Implemented a robust state management system using Zustand to handle authentication states and protected routing across the application.
-- Refined UI/UX with synchronized CSS animations, centered card layouts, and immersive detail pages with embedded video players.
+- React 18
+- Vite
+- JavaScript
+- Vanilla CSS
+- React Router DOM
+- Zustand
+- Lucide React
+- React Player
+- TMDB API
 
 ## Run Locally
 
@@ -53,17 +44,46 @@ Open the Vite URL shown in the terminal, usually:
 http://localhost:5173
 ```
 
+## Environment
+
+The app uses a Vercel serverless API route to keep the TMDB key out of the browser bundle. For local development, create `frontend/.env.local`:
+
+```text
+TMDB_API_KEY=your_tmdb_key_here
+```
+
+For Vercel, add the same environment variable in Project Settings:
+
+```text
+TMDB_API_KEY=your_tmdb_key_here
+```
+
+Do not use a `VITE_` prefix for this key. `VITE_` variables are exposed to browser code.
+
+## Deploy To Vercel
+
+Import the repository in Vercel and use:
+
+```text
+Root Directory: frontend
+Build Command: npm run build
+Output Directory: dist
+```
+
+The frontend calls `/api/tmdb`, and the serverless function forwards requests to TMDB with the server-side key.
+
 ## Project Structure
 
 ```text
-netflix-clone/
+epicstream/
 ├── frontend/
 │   ├── public/
 │   ├── src/
 │   │   ├── components/
 │   │   ├── hooks/
 │   │   ├── pages/
-│   │   └── stores/
+│   │   ├── stores/
+│   │   └── utils/
 │   ├── index.html
 │   └── package.json
 ├── README.md
@@ -72,9 +92,9 @@ netflix-clone/
 
 ## Developer Links
 
-- **LinkedIn**: [Ashish Kumar Patra](https://linkedin.com/in/ashish-kumar-patra-2b4207315/)
-- **GitHub**: [90tash](https://github.com/90tash)
+- LinkedIn: [Ashish Kumar Patra](https://linkedin.com/in/ashish-kumar-patra-2b4207315/)
+- GitHub: [90tash](https://github.com/90tash)
 
 ## Note
 
-This application is a frontend-focused project. Authentication is simulated with localStorage, and all media content is dynamically sourced from the TMDB API.
+This application is a frontend-focused project. Media metadata is dynamically sourced from the TMDB API, and playback buttons link to external player/detail experiences.

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-
-const TMDB_API_KEY = "e2949b4ae590912c037da493c44407fc";
+import { useEffect, useState } from "react";
+import { tmdbFetch } from "../utils/tmdb";
 
 const TrendingMovies = () => {
   const [movies, setMovies] = useState([]);
@@ -9,10 +8,7 @@ const TrendingMovies = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/trending/movie/day?language=en-US&api_key=${TMDB_API_KEY}`
-        );
-        const data = await response.json();
+        const data = await tmdbFetch("/trending/movie/day");
         if (data.results) {
           setMovies(data.results);
         } else {

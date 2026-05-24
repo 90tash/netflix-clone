@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useContentStore } from "../stores/content";
-
-const TMDB_API_KEY = "e2949b4ae590912c037da493c44407fc";
+import { tmdbFetch } from "../utils/tmdb";
 
 const useGetTrendingContent = () => {
   const [trendingContent, setTrendingContent] = useState([]);
@@ -15,10 +14,7 @@ const useGetTrendingContent = () => {
       setError(null);
 
       try {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/trending/${contentType}/day?language=en-US&api_key=${TMDB_API_KEY}`
-        );
-        const data = await response.json();
+        const data = await tmdbFetch(`/trending/${contentType}/day`);
         setTrendingContent(data.results || []);
       } catch (err) {
         setError(err);
